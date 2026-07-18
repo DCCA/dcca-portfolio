@@ -26,3 +26,7 @@ bun run build
 ## Notes
 
 This repo is the source for a static personal portfolio. Generated production files live in `dist/` and are intentionally not committed.
+
+## License
+
+All rights reserved. The code, copy, and visual assets are not licensed for reuse.

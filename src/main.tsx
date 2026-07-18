@@ -127,7 +127,7 @@ function App() {
 
         <div className="workLedger">
           {projects.map((project) => (
-            <article className="workRow" key={project.title}>
+            <article className="workRow" key={project.id}>
               <div className="workNumber">{project.id}</div>
               <div className="workTitleBlock">
                 <h3>{project.title}</h3>
