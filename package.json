@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/DCCA/dcca-portfolio.git"
   },
-  "homepage": "https://github.com/DCCA/dcca-portfolio#readme",
+  "homepage": "https://dcca.github.io/dcca-portfolio/",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",

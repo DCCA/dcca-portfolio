@@ -2,6 +2,8 @@
 
 Personal portfolio for Daniel Andrade, focused on AI-native product systems, signal curation, eval gates, and human review loops.
 
+Live site: https://dcca.github.io/dcca-portfolio/
+
 ## Stack
 
 - React

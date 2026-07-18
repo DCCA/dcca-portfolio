@@ -54,6 +54,8 @@ const improvements = [
   ['Product surfaces', 'Make pages and tools feel credible: sharper proof, fewer claims, better interaction evidence.'],
 ];
 
+const assetPath = `${import.meta.env.BASE_URL}assets/portfolio-systems-workspace.png`;
+
 function App() {
   return (
     <main id="top" className="siteShell">
@@ -96,7 +98,7 @@ function App() {
 
         <figure className="specimen">
           <img
-            src="/assets/portfolio-systems-workspace.png"
+            src={assetPath}
             alt="Dark product systems workspace with laptop dashboards, evaluation maps, notebooks, and annotated product artifacts"
           />
           <figcaption>
