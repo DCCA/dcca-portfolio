@@ -267,6 +267,7 @@ h1 .fade { color: var(--muted); }
   padding: clamp(16px, 1.9vw, 26px);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;   /* distribute modules so the panel fills its height instead of top-loading */
   gap: clamp(12px, 1.7vw, 20px);
   overflow: hidden;
 }
@@ -309,7 +310,6 @@ h1 .fade { color: var(--muted); }
 
 /* ---------- section heads ---------- */
 .sectionHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: clamp(8px, 1.4vw, 16px) clamp(8px, 1vw, 14px) 0; flex-wrap: wrap; }
-.sectionHead .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
 .sectionHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 22ch; }
 .sectionHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); max-width: 24ch; text-align: right; }
 /* The Work section head sits directly on the gray canvas (not inside a .pill),
@@ -352,7 +352,7 @@ h1 .fade { color: var(--muted); }
    `background` shorthand is dropped, and near-white text must not land on the
    light canvas. The solid ink keeps the dark panel (and its contrast) intact. */
 .methodMarks { position: relative; background-color: var(--ink); background: linear-gradient(180deg, var(--ink), color-mix(in oklab, var(--ink), black 30%)); color: var(--surface); padding: clamp(28px, 3.4vw, 52px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
-.methodMarks .dial { position: absolute; top: clamp(16px, 2vw, 26px); right: clamp(16px, 2vw, 26px); color: var(--surface); opacity: 0.2; }
+.methodMarks .dial { position: absolute; top: clamp(22px, 2.6vw, 36px); right: clamp(22px, 2.6vw, 36px); color: var(--surface); opacity: 0.2; }
 .methodMarks span { font-size: clamp(2.6rem, 6vw, 5rem); font-stretch: 125%; font-weight: 900; line-height: 0.82; letter-spacing: -0.04em; text-transform: uppercase; }
 .methodMarks span:nth-child(2) { color: var(--accent); }
 .methodMarks span:nth-child(3) { color: rgb(from var(--surface) r g b / 0.4); }
@@ -370,7 +370,7 @@ h1 .fade { color: var(--muted); }
 .helpHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 20ch; }
 .helpHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .helpList { display: grid; margin: clamp(20px, 2.4vw, 32px) 0 0; }
-.helpRow { display: grid; grid-template-columns: 56px minmax(0, 0.82fr) minmax(0, 1.5fr); gap: clamp(12px, 2vw, 30px); align-items: baseline; padding: clamp(16px, 1.9vw, 24px) 0; border-top: 1px solid var(--hairline); }
+.helpRow { display: grid; grid-template-columns: 52px minmax(0, 0.5fr) minmax(0, 1.9fr); gap: clamp(10px, 1.4vw, 22px); align-items: baseline; padding: clamp(16px, 1.9vw, 24px) 0; border-top: 1px solid var(--hairline); }
 .helpRow:last-child { border-bottom: 1px solid var(--hairline); }
 .helpNum { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--accent-deep); }
 .helpRow dt { font-size: clamp(1.1rem, 1.9vw, 1.6rem); text-transform: uppercase; font-stretch: 118%; }

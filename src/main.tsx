@@ -127,7 +127,7 @@ function SpecimenPanel() {
         <svg className="specBars" viewBox="0 0 172 56" preserveAspectRatio="none" aria-hidden="true">
           {bars.map((h, i) => (
             <rect key={i} x={i * 21 + 3} y={56 - h * 0.5} width="13" height={h * 0.5} rx="2"
-              fill={i === 3 ? 'var(--accent)' : 'currentColor'} opacity={i === 3 ? 1 : 0.32} />
+              fill="currentColor" opacity={i === 3 ? 0.7 : 0.3} />
           ))}
         </svg>
         <div className="specTrail">
