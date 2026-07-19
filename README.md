@@ -10,7 +10,8 @@ Live site: https://dcca.github.io/dcca-portfolio/
 - TypeScript
 - Vite
 - Bun
-- Native CSS
+- Native CSS (OKLCH design tokens)
+- Self-hosted variable fonts (Archivo, JetBrains Mono)
 
 ## Run locally
 
