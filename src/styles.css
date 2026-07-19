@@ -346,10 +346,10 @@ h1 .fade { color: var(--muted); }
 }
 
 /* ---------- section heads ---------- */
-/* No horizontal padding, so the heading + meta align to the tile grid's left/right
-   edge (were inset 14px); bottom padding gives the same head→content spacing that
-   Help (.helpList margin) and Method (.modeList margin) have. */
-.sectionHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 0 0 clamp(20px, 2.4vw, 30px); flex-wrap: wrap; }
+/* Inset by the panel token so this heading (the Work section has no pill) shares
+   the SAME left edge as the hero/help/contact headings — keeping the display-type
+   spine consistent down the page. Bottom padding matches Help/Method head→content. */
+.sectionHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 0 var(--pad-panel) clamp(20px, 2.4vw, 30px); flex-wrap: wrap; }
 .sectionHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 22ch; }
 .sectionHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); max-width: 24ch; text-align: right; }
 /* The Work section head sits directly on the gray canvas (not inside a .pill),
@@ -399,7 +399,7 @@ h1 .fade { color: var(--muted); }
 .methodBody { padding: var(--pad-panel); background: var(--surface); }
 .methodBody .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
 .methodBody h2 { margin-top: 12px; font-size: clamp(1.9rem, 3.2vw, 3rem); text-transform: uppercase; max-width: 18ch; }
-.modeList { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(16px, 2vw, 26px); margin-top: clamp(24px, 2.6vw, 36px); }
+.modeList { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(16px, 2vw, 26px); margin-top: clamp(20px, 2.4vw, 30px); }
 .modeItem dt { font-size: clamp(1.2rem, 1.7vw, 1.6rem); text-transform: uppercase; font-stretch: 118%; }
 .modeItem dd { margin-top: 10px; font-stretch: 100%; font-weight: 450; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
 
@@ -409,7 +409,7 @@ h1 .fade { color: var(--muted); }
 .helpHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 .helpHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 20ch; }
 .helpHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.helpList { display: grid; margin: clamp(20px, 2.4vw, 32px) 0 0; }
+.helpList { display: grid; margin: clamp(20px, 2.4vw, 30px) 0 0; }
 .helpRow { display: grid; grid-template-columns: 52px minmax(0, 0.5fr) minmax(0, 1.9fr); gap: clamp(10px, 1.4vw, 22px); align-items: baseline; padding: clamp(16px, 1.9vw, 24px) 0; border-top: 1px solid var(--hairline); }
 .helpRow:last-child { border-bottom: 1px solid var(--hairline); }
 .helpNum { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--accent-deep); }
@@ -490,7 +490,6 @@ h1 .fade { color: var(--muted); }
   .contact { grid-template-columns: minmax(0, 1fr); }
   .sectionHead p { display: none; }
   .heroProof { grid-template-columns: minmax(0, 1fr); }
-  .heroMain { padding: clamp(22px, 5vw, 34px); }
   /* narrower + smaller so whole words fit the column and never break mid-word */
   h1 { font-size: clamp(2.2rem, 11vw, 3.3rem); font-stretch: 110%; letter-spacing: -0.028em; }
   .sectionHead h2 { font-size: clamp(1.9rem, 8.4vw, 2.8rem); }
