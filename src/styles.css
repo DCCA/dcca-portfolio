@@ -34,6 +34,7 @@
     0 34px 60px -28px rgb(from var(--ink) r g b / 0.6);
 
   --radius-panel: clamp(22px, 2.6vw, 40px);
+  --pad-panel: clamp(26px, 3.2vw, 48px);   /* one padding scale for all large glossy panels */
   --radius-tile: clamp(20px, 2vw, 32px);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --gutter: clamp(16px, 3.4vw, 40px);
@@ -103,6 +104,13 @@ h1, h2, h3 {
   width: min(100%, 1360px);
   margin: 0 auto;
   padding: clamp(14px, 2.2vw, 26px) var(--gutter) clamp(40px, 6vw, 80px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.4vw, 30px);
+}
+/* Sections live inside <main>; give them the SAME rhythm token as everything
+   else so every panel floats with consistent breathing room (they were flush). */
+main {
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 2.4vw, 30px);
@@ -212,7 +220,7 @@ h1, h2, h3 {
   grid-template-columns: 1.12fr 0.88fr;
   gap: clamp(16px, 2.4vw, 30px);
 }
-.heroMain { padding: clamp(28px, 3.6vw, 56px); display: flex; flex-direction: column; }
+.heroMain { padding: var(--pad-panel); display: flex; flex-direction: column; }
 .heroKicker {
   display: flex; flex-wrap: wrap; gap: 8px 10px;
   font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
@@ -338,7 +346,10 @@ h1 .fade { color: var(--muted); }
 }
 
 /* ---------- section heads ---------- */
-.sectionHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: clamp(8px, 1.4vw, 16px) clamp(8px, 1vw, 14px) 0; flex-wrap: wrap; }
+/* No horizontal padding, so the heading + meta align to the tile grid's left/right
+   edge (were inset 14px); bottom padding gives the same head→content spacing that
+   Help (.helpList margin) and Method (.modeList margin) have. */
+.sectionHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 0 0 clamp(20px, 2.4vw, 30px); flex-wrap: wrap; }
 .sectionHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 22ch; }
 .sectionHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); max-width: 24ch; text-align: right; }
 /* The Work section head sits directly on the gray canvas (not inside a .pill),
@@ -380,12 +391,12 @@ h1 .fade { color: var(--muted); }
 /* background-color fallback first: if color-mix() is unsupported the whole
    `background` shorthand is dropped, and near-white text must not land on the
    light canvas. The solid ink keeps the dark panel (and its contrast) intact. */
-.methodMarks { position: relative; background-color: var(--ink); background: linear-gradient(180deg, var(--ink), color-mix(in oklab, var(--ink), black 30%)); color: var(--surface); padding: clamp(28px, 3.4vw, 52px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.methodMarks { position: relative; background-color: var(--ink); background: linear-gradient(180deg, var(--ink), color-mix(in oklab, var(--ink), black 30%)); color: var(--surface); padding: var(--pad-panel); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
 .methodMarks .dial { position: absolute; top: clamp(22px, 2.6vw, 36px); right: clamp(22px, 2.6vw, 36px); color: var(--surface); opacity: 0.2; }
 .methodMarks span { font-size: clamp(2.6rem, 6vw, 5rem); font-stretch: 125%; font-weight: 900; line-height: 0.82; letter-spacing: -0.04em; text-transform: uppercase; }
 .methodMarks span:nth-child(2) { color: var(--accent); }
 .methodMarks span:nth-child(3) { color: rgb(from var(--surface) r g b / 0.4); }
-.methodBody { padding: clamp(26px, 3vw, 46px); background: var(--surface); }
+.methodBody { padding: var(--pad-panel); background: var(--surface); }
 .methodBody .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
 .methodBody h2 { margin-top: 12px; font-size: clamp(1.9rem, 3.2vw, 3rem); text-transform: uppercase; max-width: 18ch; }
 .modeList { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(16px, 2vw, 26px); margin-top: clamp(24px, 2.6vw, 36px); }
@@ -394,7 +405,7 @@ h1 .fade { color: var(--muted); }
 
 /* ---------- help ---------- */
 /* A single-column ledger (not another 2x2 grid) to vary the page rhythm. */
-.help { padding: clamp(26px, 3vw, 46px); border-radius: var(--radius-panel); }
+.help { padding: var(--pad-panel); border-radius: var(--radius-panel); }
 .helpHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 .helpHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 20ch; }
 .helpHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
@@ -406,7 +417,7 @@ h1 .fade { color: var(--muted); }
 .helpRow dd { margin: 0; font-stretch: 100%; font-weight: 450; font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
 
 /* ---------- contact ---------- */
-.contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2.4vw, 30px); padding: clamp(28px, 3.4vw, 52px); border-radius: var(--radius-panel); }
+.contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2.4vw, 30px); padding: var(--pad-panel); border-radius: var(--radius-panel); }
 .contactLead { position: relative; }
 .contactLead .dial { color: var(--ink); opacity: 0.14; margin-top: clamp(24px, 3.4vw, 44px); }
 .contactLead .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
