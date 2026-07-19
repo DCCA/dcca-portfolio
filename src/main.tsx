@@ -145,10 +145,11 @@ const Arrow = () => <span className="arrow" aria-hidden="true">↗</span>;
 
 function App() {
   return (
-    <div className="page">
+    <>
       <a className="skipLink" href="#work">Skip to work</a>
 
       <header className="topbar">
+        <div className="topbarInner">
         <div className="bar pill">
           <a className="brand" href="#top" aria-label="Daniel Andrade — home">DA</a>
           <nav className="links" aria-label="Primary">
@@ -159,8 +160,10 @@ function App() {
           </nav>
           <a className="barStatus" href="#contact">Open to AI product roles</a>
         </div>
+        </div>
       </header>
 
+      <div className="page">
       <main id="top">
         <section className="hero" aria-labelledby="hero-title">
           <div className="heroMain pill reveal">
@@ -297,7 +300,8 @@ function App() {
         <span>Daniel Andrade</span>
         <span>AI-native product systems · {new Date().getFullYear()}</span>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }
 
