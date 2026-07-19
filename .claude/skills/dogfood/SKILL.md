@@ -34,8 +34,12 @@ Key invariants from the audit that must stay true:
 
 `bun run shots` and `bun run contrast` are shortcuts for steps 3 and 5 (a preview server must already be running).
 
+## Enforced in CI
+
+`.github/workflows/pr-checks.yml` runs this same loop on every PR to `main`: build → serve → **contrast gate** (`scripts/contrast.mjs`) → **overflow/console gate** (`scripts/shoot.mjs`), and uploads the screenshots as a build artifact. Both scripts honor a `CHROMIUM_PATH` env var (CI points it at a runner-provided Chrome); locally they default to the pre-installed Chromium. So a regression these gates catch will fail the PR — run them locally first.
+
 ## Notes
 
-- Chromium is pre-installed at `/opt/pw-browsers/chromium-1194/chrome-linux/chrome` (the scripts point there); `playwright-core` is a dev dependency. No `playwright install`.
+- Chromium is pre-installed at `/opt/pw-browsers/chromium-1194/chrome-linux/chrome` (the scripts default there; override with `CHROMIUM_PATH`); `playwright-core` is a dev dependency. No `playwright install`.
 - Full-page mobile captures can be very tall — expect large PNGs; that's fine for local inspection.
 - The live GitHub Pages site only deploys on push to `main`, so dogfooding against the local preview is the only pre-merge signal.

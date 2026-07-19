@@ -3,7 +3,7 @@
 import { chromium } from 'playwright-core';
 import { mkdirSync } from 'node:fs';
 
-const EXECUTABLE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const EXECUTABLE = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const url = process.argv[2] || 'http://localhost:4173/dcca-portfolio/';
 const outDir = process.argv[3] || '/tmp/claude-0/-home-user-dcca-portfolio/d663ba44-2484-5688-803a-e18248e6b797/scratchpad/shots';
 const tag = process.argv[4] || 'v';
@@ -36,5 +36,5 @@ for (const vp of viewports) {
   await ctx.close();
 }
 await browser.close();
-if (problems.length) { console.log('\n=== PROBLEMS ===\n' + problems.join('\n')); }
-else { console.log('\nno console errors / no horizontal overflow'); }
+if (problems.length) { console.log('\n=== PROBLEMS ===\n' + problems.join('\n')); process.exit(1); }
+console.log('\nno console errors / no horizontal overflow');

@@ -8,7 +8,7 @@
 // Exit code 1 if any real failure is found (usable as a CI gate).
 import { chromium } from 'playwright-core';
 
-const EXECUTABLE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const EXECUTABLE = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const url = process.argv[2] || 'http://localhost:4173/dcca-portfolio/';
 
 const browser = await chromium.launch({ executablePath: EXECUTABLE });
