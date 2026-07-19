@@ -32,7 +32,16 @@ for (const vp of viewports) {
   if (overflow.over > 1) problems.push(`[${vp.name}] HORIZONTAL OVERFLOW: scrollW ${overflow.scrollW} > clientW ${overflow.clientW} (+${overflow.over}px)`);
   const file = `${outDir}/${tag}-${vp.name}.png`;
   await page.screenshot({ path: file, fullPage: true });
-  console.log(`shot ${vp.name} ${vp.width}px -> ${file}${overflow.over > 1 ? '  ⚠ OVERFLOW' : ''}`);
+  // Mid-scroll viewport frame: fullPage captures never show the sticky header
+  // composited over scrolled content, so grab a real scrolled viewport too.
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = 'auto'; // bypass CSS smooth-scroll so the frame is deterministic
+    window.scrollTo(0, Math.round(document.documentElement.scrollHeight * 0.28));
+  });
+  await page.waitForTimeout(250);
+  const scrollFile = `${outDir}/${tag}-${vp.name}-scroll.png`;
+  await page.screenshot({ path: scrollFile });
+  console.log(`shot ${vp.name} ${vp.width}px -> ${file} (+scroll)${overflow.over > 1 ? '  ⚠ OVERFLOW' : ''}`);
   await ctx.close();
 }
 await browser.close();
