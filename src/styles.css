@@ -125,12 +125,15 @@ h1, h2, h3 {
   z-index: 40;
   margin-inline: calc(-1 * var(--gutter));
   padding: clamp(10px, 1.6vw, 18px) var(--gutter);
+  /* opaque fallback FIRST: if the relative-color line below is unsupported
+     (blur-capable engines predate rgb(from …)), the shorthand is dropped and
+     this stays — an opaque band, never a see-through one. */
+  background-color: var(--canvas);
   background: rgb(from var(--canvas) r g b / 0.72);
   -webkit-backdrop-filter: blur(16px) saturate(1.3);
   backdrop-filter: blur(16px) saturate(1.3);
 }
-/* progressive enhancement: only lean on translucency where blur is supported;
-   otherwise fall back to an opaque canvas band (no see-through). */
+/* no blur support → make the band fully opaque so nothing shows through. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .topbar { background: var(--canvas); }
 }
