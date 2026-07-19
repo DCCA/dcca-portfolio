@@ -18,9 +18,9 @@ OKLCH throughout. Alpha via `rgb(from var(--token) r g b / a)` — no hardcoded 
 - `--ink-soft` `oklch(0.34 0.006 60)` — secondary text on white.
 - `--muted` `oklch(0.46 0.006 60)` — muted labels/meta on white (≥4.6:1 on `--surface`; verified).
 - `--accent` `oklch(0.628 0.229 30)` — hot red-orange. The single loud color.
-- `--accent-deep` `oklch(0.523 0.20 30)` — accent text on white where small (≥4.5:1).
-- `--on-accent` `oklch(0.99 0.01 90)` — text on accent fills.
-- `--hairline` `rgb(from var(--ink) r g b / 0.22)` — thin schematic strokes and dividers.
+- `--accent-deep` `oklch(0.49 0.19 30)` — accent text on white where small (≥4.5:1).
+- `--on-accent` `oklch(0.2 0.04 40)` — text on accent fills. **Dark**, not light: the bright accent only reaches ~2.8:1 with white, so ink-on-accent (~4.65:1) is the accessible choice, matching the reference's dark-text-on-red card. Accent fills must stay solid (a fade toward `--accent-deep` drops this below AA).
+- `--hairline` `rgb(from var(--ink) r g b / 0.16)` — thin schematic strokes and dividers.
 
 **Contrast discipline (WCAG 2.2 AA):** small text only on white surfaces. On the gray canvas, only large display type (`--ink`, ≥8:1) and dark labels are allowed — `--muted` and `--accent` never carry small text on gray (they fail there). Accent as a small-text color uses `--accent-deep` on white only; large accent type may use `--accent`.
 

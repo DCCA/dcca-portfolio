@@ -33,10 +33,13 @@ const findings = await page.evaluate(() => {
     let n = el; const chain = [];
     while (n && n !== document.documentElement) {
       const cs = getComputedStyle(n), c = cs.backgroundColor;
-      if (n.classList.contains('tile--accent')) { chain.push(['s', ACCENT]); break; }
+      // A gradient fill hides its stops from backgroundColor. Resolve the known
+      // gradient panels to their DARKEST stop (worst case for contrast). Solid
+      // fills (incl. the accent tile) are read normally from backgroundColor below.
       if (n.classList.contains('methodMarks')) { chain.push(['s', INK]); break; }
+      if (n === document.body) break;               // body carries the CANVAS gradient → base stays CANVAS
       if (c && c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent') chain.push(['c', c]);
-      else if (n.classList.contains('pill') || cs.backgroundImage.includes('gradient')) { chain.push(['s', SURFACE]); break; }
+      else if (n.classList.contains('pill')) { chain.push(['s', SURFACE]); break; }
       n = n.parentElement;
     }
     let base = CANVAS;

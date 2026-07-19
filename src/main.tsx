@@ -180,7 +180,7 @@ function App() {
           ))}
         </div>
 
-        <section id="work" className="work" aria-labelledby="work-title">
+        <section id="work" className="work" aria-labelledby="work-title" tabIndex={-1}>
           <div className="sectionHead">
             <div>
               <span className="kicker">Selected systems</span>
