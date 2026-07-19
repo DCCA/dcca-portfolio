@@ -15,7 +15,7 @@ type Project = {
   body: string;
   proof: string;
   href?: string;
-  accent?: boolean;
+  live?: boolean;
 };
 
 const projects: Project[] = [
@@ -26,7 +26,7 @@ const projects: Project[] = [
     status: 'Live product',
     body: 'A live AI signal desk that turns launches, repos, tools, and concepts into practical calls: learn, try, watch, or ignore.',
     proof: 'Built on source receipts, editorial judgment, and a clear reason a busy operator should care.',
-    accent: true,
+    live: true,
   },
   {
     id: '02',
@@ -73,21 +73,17 @@ const improvements: [string, string][] = [
 
 const capabilities = ['Signal curation', 'Eval gates', 'Human review loops', 'Local-first automation', 'Fintech product leadership'];
 
-const assetPath = `${import.meta.env.BASE_URL}assets/portfolio-systems-workspace.png`;
-
 function Dial({ label = '01', size = 108 }: { label?: string; size?: number }) {
   const c = size / 2;
   const ticks = Array.from({ length: 12 }, (_, i) => {
     const a = (i / 12) * Math.PI * 2;
-    const r1 = c - 4;
-    const r2 = c - 11;
     return (
       <line
         key={i}
-        x1={c + Math.cos(a) * r1}
-        y1={c + Math.sin(a) * r1}
-        x2={c + Math.cos(a) * r2}
-        y2={c + Math.sin(a) * r2}
+        x1={c + Math.cos(a) * (c - 4)}
+        y1={c + Math.sin(a) * (c - 4)}
+        x2={c + Math.cos(a) * (c - 11)}
+        y2={c + Math.sin(a) * (c - 11)}
         stroke="currentColor"
         strokeWidth="1"
         opacity="0.45"
@@ -105,6 +101,43 @@ function Dial({ label = '01', size = 108 }: { label?: string; size?: number }) {
         {label}
       </text>
     </svg>
+  );
+}
+
+// Decorative instrument-panel "specimen": a schematic of the signal → decision
+// loop. Light (keeps the Method panel as the page's only dark moment) and custom
+// (not stock imagery). aria-hidden internals; the figure carries the label.
+function SpecimenPanel() {
+  const bars = [40, 66, 30, 88, 52, 72, 44, 60];
+  return (
+    <figure className="specimen pill reveal" aria-label="Schematic of the signal-to-decision loop: dials, a ship/revise/reject scorecard, signal bars, and a source trail.">
+      <div className="specScreen" aria-hidden="true">
+        <div className="specHead">
+          <span>Signal Desk</span>
+          <span>OS · 2.0</span>
+        </div>
+        <div className="specRow">
+          <Dial label="01" size={96} />
+          <dl className="specScore">
+            <div className="scoreRow scoreRow--ship"><dt>Ship</dt><dd>12</dd></div>
+            <div className="scoreRow"><dt>Revise</dt><dd>03</dd></div>
+            <div className="scoreRow"><dt>Reject</dt><dd>07</dd></div>
+          </dl>
+        </div>
+        <svg className="specBars" viewBox="0 0 172 56" preserveAspectRatio="none" aria-hidden="true">
+          {bars.map((h, i) => (
+            <rect key={i} x={i * 21 + 3} y={56 - h * 0.5} width="13" height={h * 0.5} rx="2"
+              fill={i === 3 ? 'var(--accent)' : 'currentColor'} opacity={i === 3 ? 1 : 0.32} />
+          ))}
+        </svg>
+        <div className="specTrail">
+          <span>src · github <b>ok</b></span>
+          <span>eval · 12 / 14 gates</span>
+          <span>review · human <b>ok</b></span>
+        </div>
+      </div>
+      <figcaption className="specimenTag">Specimen A — Operating panel</figcaption>
+    </figure>
   );
 }
 
@@ -157,12 +190,7 @@ function App() {
           </div>
 
           <div className="heroAside">
-            <div className="specimen pill reveal">
-              <figure>
-                <img src={assetPath} alt="Dark product-systems workbench: laptop dashboards, evaluation maps, notebooks, and annotated product artifacts" />
-              </figure>
-              <span className="specimenTag">Specimen A — Systems workbench</span>
-            </div>
+            <SpecimenPanel />
             <dl className="dialCard pill reveal">
               <Dial label="04" />
               <div className="dialCopy">
@@ -182,15 +210,12 @@ function App() {
 
         <section id="work" className="work" aria-labelledby="work-title" tabIndex={-1}>
           <div className="sectionHead">
-            <div>
-              <span className="kicker">Selected systems</span>
-              <h2 id="work-title">Small enough to inspect. Real enough to validate.</h2>
-            </div>
+            <h2 id="work-title">Small enough to inspect. Real enough to validate.</h2>
             <p>Four shipped systems · source on GitHub</p>
           </div>
           <div className="tiles">
             {projects.map((p) => (
-              <article className={`tile pill reveal${p.accent ? ' tile--accent' : ''}`} key={p.id}>
+              <article className={`tile pill reveal${p.live ? ' tile--live' : ''}`} key={p.id}>
                 <div className="tileTop">
                   <span className="tileNum">/{p.id}</span>
                   <span className="tileStatus">{p.status}</span>
@@ -209,6 +234,7 @@ function App() {
 
         <section id="method" className="method pill reveal" aria-labelledby="method-title">
           <div className="methodMarks" aria-hidden="true">
+            <Dial label="00" size={132} />
             <span>Source</span>
             <span>Judge</span>
             <span>Verify</span>
@@ -228,15 +254,14 @@ function App() {
         </section>
 
         <section className="help pill reveal" aria-labelledby="help-title">
-          <div className="sectionHead">
-            <div>
-              <span className="kicker">Where I can help</span>
-              <h2 id="help-title">Bring the workflow that needs judgment.</h2>
-            </div>
+          <div className="helpHead">
+            <h2 id="help-title">Bring the workflow that needs judgment.</h2>
+            <p>Where I can help</p>
           </div>
-          <dl className="helpGrid">
-            {improvements.map(([term, desc]) => (
-              <div className="helpItem" key={term}>
+          <dl className="helpList">
+            {improvements.map(([term, desc], i) => (
+              <div className="helpRow" key={term}>
+                <span className="helpNum">/{String(i + 1).padStart(2, '0')}</span>
                 <dt>{term}</dt>
                 <dd>{desc}</dd>
               </div>
@@ -249,6 +274,7 @@ function App() {
             <span className="kicker">Available for sharp AI product conversations</span>
             <h2 id="contact-title">Let's talk systems.</h2>
             <p>Senior AI product roles and serious advisory work. If a workflow needs product judgment, start here.</p>
+            <Dial label="05" size={92} />
           </div>
           <div className="contactLinks">
             <a className="contactLink contactLink--primary" href={LINKEDIN} target="_blank" rel="noreferrer">

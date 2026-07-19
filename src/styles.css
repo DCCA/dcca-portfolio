@@ -243,27 +243,50 @@ h1 .fade { color: var(--muted); }
 .cta--ghost:hover, .cta--ghost:focus-visible { transform: translateY(-3px); background: rgb(from var(--ink) r g b / 0.09); }
 
 .heroAside { position: relative; display: flex; flex-direction: column; gap: clamp(16px, 2.4vw, 30px); }
+/* Schematic "operating panel" specimen — a light instrument panel (keeps the
+   Method section as the page's only dark moment). Custom, not stock imagery. */
 .specimen {
   position: relative;
   flex: 1;
-  min-height: clamp(280px, 34vw, 440px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: clamp(300px, 34vw, 460px);
   padding: 14px;
   border-radius: var(--radius-panel);
+  margin: 0;
+}
+.specScreen {
+  flex: 1;
+  border-radius: calc(var(--radius-panel) - 12px);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  background-color: var(--surface);
+  background-image: radial-gradient(var(--hairline) 1px, transparent 1.4px);
+  background-size: 15px 15px;
+  color: var(--ink);
+  padding: clamp(16px, 1.9vw, 26px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.7vw, 20px);
   overflow: hidden;
 }
-.specimen figure { height: 100%; border-radius: calc(var(--radius-panel) - 12px); overflow: hidden; background: var(--ink); }
-.specimen img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: grayscale(0.6) contrast(1.08) brightness(0.92);
-}
+.specHead { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.specRow { display: flex; align-items: center; gap: clamp(14px, 2vw, 24px); }
+.specScore { flex: 1; display: grid; gap: 7px; margin: 0; min-width: 0; }
+.scoreRow { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 10px; background: rgb(from var(--ink) r g b / 0.045); box-shadow: inset 0 0 0 1px var(--hairline); }
+.scoreRow dt { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+.scoreRow dd { margin: 0; font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink); }
+.scoreRow--ship { background: var(--accent); box-shadow: none; }
+.scoreRow--ship dt, .scoreRow--ship dd { color: var(--on-accent); }
+.specBars { width: 100%; height: clamp(38px, 5vw, 54px); color: var(--ink); }
+.specTrail { display: grid; gap: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em; color: var(--ink-soft); }
+.specTrail b { color: var(--accent-deep); font-weight: 600; }
 .specimenTag {
-  position: absolute; left: 24px; bottom: 24px; z-index: 2;
-  display: inline-flex; gap: 10px; align-items: center;
+  display: inline-flex; gap: 10px; align-items: center; align-self: flex-start;
   padding: 9px 14px; border-radius: 999px;
-  background: rgb(from var(--surface) r g b / 0.9);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink);
+  background: rgb(from var(--ink) r g b / 0.05);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft);
 }
 .specimenTag::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--accent); }
 .dialCard { padding: clamp(18px, 2vw, 26px); border-radius: var(--radius-panel); display: flex; align-items: center; gap: 18px; }
@@ -287,11 +310,10 @@ h1 .fade { color: var(--muted); }
 /* ---------- section heads ---------- */
 .sectionHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: clamp(8px, 1.4vw, 16px) clamp(8px, 1vw, 14px) 0; flex-wrap: wrap; }
 .sectionHead .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
-.sectionHead h2 { margin-top: 12px; font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 22ch; }
+.sectionHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 22ch; }
 .sectionHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); max-width: 24ch; text-align: right; }
-/* The Work section head is the one that sits directly on the gray canvas (not
-   inside a .pill), where accent/muted small text fails AA. Use dark ink there. */
-.work .sectionHead .kicker { color: var(--ink); }
+/* The Work section head sits directly on the gray canvas (not inside a .pill),
+   where muted small text fails AA. Use dark ink there. */
 .work .sectionHead p { color: var(--ink-soft); }
 
 /* ---------- work tiles ---------- */
@@ -316,19 +338,21 @@ h1 .fade { color: var(--muted); }
 .tileOpen .arrow { transition: transform 320ms var(--ease); }
 .tileOpen:hover .arrow, .tileOpen:focus-visible .arrow { transform: translate(3px, -3px); }
 
-/* Solid accent (not a gradient): a fade to --accent-deep dropped the dark
-   ink text to ~2.6:1 over the dark end. Solid --accent holds 4.65:1 AA. */
-.tile--accent { background: var(--accent); box-shadow: inset 0 1px 0 rgb(from var(--surface-hi) r g b / 0.3), 0 22px 45px -24px rgb(from var(--accent) r g b / 0.75); color: var(--on-accent); }
-.tile--accent .tileNum, .tile--accent .tileType, .tile--accent .tileBody, .tile--accent .tileProof, .tile--accent .tileOpen { color: var(--on-accent); }
-.tile--accent .tileStatus { background: rgb(from var(--surface) r g b / 0.92); color: var(--accent-deep); box-shadow: none; }
-.tile--accent:hover { box-shadow: inset 0 1px 0 rgb(from var(--surface-hi) r g b / 0.3), 0 34px 60px -26px rgb(from var(--accent) r g b / 0.85); }
+/* Featured "live" tile — a white pill with accent DETAIL (ring, filled status
+   chip, accent number), not a full red flood. Keeps the loudest red for the
+   LinkedIn CTAs so the primary conversion, not a project card, owns attention. */
+.tile--live { box-shadow: var(--shadow-pill), 0 0 0 1.5px rgb(from var(--accent) r g b / 0.5), 0 26px 48px -28px rgb(from var(--accent) r g b / 0.5); }
+.tile--live:hover { box-shadow: var(--shadow-pill-hi), 0 0 0 1.5px rgb(from var(--accent) r g b / 0.62), 0 34px 60px -28px rgb(from var(--accent) r g b / 0.55); }
+.tile--live .tileNum { color: var(--accent-deep); }
+.tile--live .tileStatus { background: var(--accent); color: var(--on-accent); box-shadow: none; }
 
 /* ---------- method (dark) ---------- */
 .method { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 0; overflow: hidden; padding: 0; border-radius: var(--radius-panel); }
 /* background-color fallback first: if color-mix() is unsupported the whole
    `background` shorthand is dropped, and near-white text must not land on the
    light canvas. The solid ink keeps the dark panel (and its contrast) intact. */
-.methodMarks { background-color: var(--ink); background: linear-gradient(180deg, var(--ink), color-mix(in oklab, var(--ink), black 30%)); color: var(--surface); padding: clamp(28px, 3.4vw, 52px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.methodMarks { position: relative; background-color: var(--ink); background: linear-gradient(180deg, var(--ink), color-mix(in oklab, var(--ink), black 30%)); color: var(--surface); padding: clamp(28px, 3.4vw, 52px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.methodMarks .dial { position: absolute; top: clamp(16px, 2vw, 26px); right: clamp(16px, 2vw, 26px); color: var(--surface); opacity: 0.2; }
 .methodMarks span { font-size: clamp(2.6rem, 6vw, 5rem); font-stretch: 125%; font-weight: 900; line-height: 0.82; letter-spacing: -0.04em; text-transform: uppercase; }
 .methodMarks span:nth-child(2) { color: var(--accent); }
 .methodMarks span:nth-child(3) { color: rgb(from var(--surface) r g b / 0.4); }
@@ -340,14 +364,22 @@ h1 .fade { color: var(--muted); }
 .modeItem dd { margin-top: 10px; font-stretch: 100%; font-weight: 450; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
 
 /* ---------- help ---------- */
+/* A single-column ledger (not another 2x2 grid) to vary the page rhythm. */
 .help { padding: clamp(26px, 3vw, 46px); border-radius: var(--radius-panel); }
-.helpGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(14px, 1.8vw, 24px); margin-top: clamp(22px, 2.4vw, 32px); }
-.helpItem { padding: clamp(18px, 2vw, 26px); border-radius: var(--radius-tile); background: rgb(from var(--ink) r g b / 0.035); box-shadow: inset 0 0 0 1px var(--hairline); }
-.helpItem dt { font-size: clamp(1.15rem, 1.7vw, 1.5rem); text-transform: uppercase; font-stretch: 118%; }
-.helpItem dd { margin-top: 12px; font-stretch: 100%; font-weight: 450; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+.helpHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.helpHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 20ch; }
+.helpHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.helpList { display: grid; margin: clamp(20px, 2.4vw, 32px) 0 0; }
+.helpRow { display: grid; grid-template-columns: 56px minmax(0, 0.82fr) minmax(0, 1.5fr); gap: clamp(12px, 2vw, 30px); align-items: baseline; padding: clamp(16px, 1.9vw, 24px) 0; border-top: 1px solid var(--hairline); }
+.helpRow:last-child { border-bottom: 1px solid var(--hairline); }
+.helpNum { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--accent-deep); }
+.helpRow dt { font-size: clamp(1.1rem, 1.9vw, 1.6rem); text-transform: uppercase; font-stretch: 118%; }
+.helpRow dd { margin: 0; font-stretch: 100%; font-weight: 450; font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
 
 /* ---------- contact ---------- */
 .contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2.4vw, 30px); padding: clamp(28px, 3.4vw, 52px); border-radius: var(--radius-panel); }
+.contactLead { position: relative; }
+.contactLead .dial { color: var(--ink); opacity: 0.14; margin-top: clamp(24px, 3.4vw, 44px); }
 .contactLead .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
 .contactLead h2 { margin-top: 14px; font-size: clamp(2.2rem, 4vw, 3.4rem); text-transform: uppercase; }
 .contactLead p { margin-top: 18px; max-width: 34ch; font-stretch: 100%; font-weight: 450; font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); }
@@ -412,7 +444,8 @@ h1 .fade { color: var(--muted); }
   .links { display: none; }
   .heroAside { flex-direction: column; }
   .tiles { grid-template-columns: minmax(0, 1fr); }
-  .helpGrid { grid-template-columns: minmax(0, 1fr); }
+  .helpRow { grid-template-columns: 44px minmax(0, 1fr); row-gap: 8px; }
+  .helpRow dd { grid-column: 1 / 3; }
   .modeList { grid-template-columns: minmax(0, 1fr); }
   .contact { grid-template-columns: minmax(0, 1fr); }
   .sectionHead p { display: none; }

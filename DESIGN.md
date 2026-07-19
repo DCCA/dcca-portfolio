@@ -38,7 +38,13 @@ Liquid-glass pill recipe: `background: linear-gradient(180deg, var(--surface-hi)
 
 ## Motifs
 
-Thin-stroke SVG **schematic dials** — concentric circles with radial tick divisions and a mono `01` marker — used as decorative technical texture (always `aria-hidden`). They echo the reference's instrument-panel feel without carrying meaning.
+Thin-stroke SVG **schematic dials** — concentric circles with radial tick divisions and a mono `01` marker — recurring as decorative technical texture (always `aria-hidden`): the hero operating-loop card, a faint one in the Method panel, and one in the contact panel. They echo the reference's instrument-panel feel without carrying meaning.
+
+The hero's right column is a **schematic "operating panel"** (`SpecimenPanel`) — a light instrument screen with a dial, a ship/revise/reject scorecard (the `SHIP` row is the one accent fill), signal bars, and a source trail. It is custom, not stock imagery, and deliberately **light** so the Method section stays the page's single dark moment.
+
+## Accent discipline
+
+The accent is one loud color; keep it scarce. The **LinkedIn CTAs** (hero + contact) are the loudest red on the page — the primary conversion, not a project card, should own attention. The live project is a **featured white tile** with accent *detail* (a red ring, a filled `Live product` chip, an accent number), never a full red flood. A single accent word (`JUDGE`) in the dark Method panel is the one other loud moment.
 
 ## Motion
 
