@@ -26,6 +26,7 @@ const projects: Project[] = [
     status: 'Live product',
     body: 'A live AI signal desk that turns launches, repos, tools, and concepts into practical calls: learn, try, watch, or ignore.',
     proof: 'Built on source receipts, editorial judgment, and a clear reason a busy operator should care.',
+    href: 'https://aisignaldesk.ai/',
     live: true,
   },
   {
@@ -228,7 +229,7 @@ function App() {
                 <p className="tileBody">{p.body}</p>
                 <p className="tileProof">{p.proof}</p>
                 {p.href ? (
-                  <a className="tileOpen" href={p.href} target="_blank" rel="noreferrer">Open repository <Arrow /></a>
+                  <a className="tileOpen" href={p.href} target="_blank" rel="noreferrer">{p.live ? 'Visit site' : 'Open repository'} <Arrow /></a>
                 ) : null}
               </article>
             ))}
