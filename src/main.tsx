@@ -215,7 +215,7 @@ function App() {
         <section id="work" className="work" aria-labelledby="work-title" tabIndex={-1}>
           <div className="sectionHead">
             <h2 id="work-title">Small enough to inspect. Real enough to validate.</h2>
-            <p>Four shipped systems · source on GitHub</p>
+            <p>Four shipped systems · one live, three on GitHub</p>
           </div>
           <div className="tiles">
             {projects.map((p) => (
@@ -229,7 +229,7 @@ function App() {
                 <p className="tileBody">{p.body}</p>
                 <p className="tileProof">{p.proof}</p>
                 {p.href ? (
-                  <a className="tileOpen" href={p.href} target="_blank" rel="noreferrer">{p.live ? 'Visit site' : 'Open repository'} <Arrow /></a>
+                  <a className="tileOpen" href={p.href} target="_blank" rel="noreferrer" aria-label={p.live ? `Visit the ${p.title} site` : `Open the ${p.title} repository`}>{p.live ? 'Visit site' : 'Open repository'} <Arrow /></a>
                 ) : null}
               </article>
             ))}
