@@ -135,13 +135,13 @@ main {
      the frost is edge-to-edge with no side strips. Uses 100% width — never vw —
      so a scrollbar can't cause horizontal overflow. */
   padding-block: clamp(10px, 1.6vw, 18px);
-  /* opaque fallback FIRST: if the relative-color line below is unsupported
-     (blur-capable engines predate rgb(from …)), the shorthand is dropped and
-     this stays — an opaque band, never a see-through one. */
-  background-color: var(--canvas);
-  background: rgb(from var(--canvas) r g b / 0.72);
-  -webkit-backdrop-filter: blur(16px) saturate(1.3);
-  backdrop-filter: blur(16px) saturate(1.3);
+  /* Transparent + blur only. A solid tint (canvas@0.72) painted a visibly
+     lighter rectangle behind the menu at rest, with a hard seam where the band
+     ended. Blur alone leaves the canvas color unchanged at rest (no seam) yet
+     still softens scrolled content behind the bar so nothing shows sharply. */
+  background: transparent;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 /* Inner container aligns the pill to the same 1360px grid + gutter as .page. */
 .topbarInner {
