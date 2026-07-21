@@ -479,6 +479,9 @@ h1 .fade { color: var(--muted); }
   .heroAside { flex-direction: row; }
   .specimen { min-height: 300px; }
   .method { grid-template-columns: minmax(0, 1fr); }
+  /* Once the capability pills wrap to multiple rows, the 999px stadium radius
+     becomes a giant capsule that clips the corner pills. Use the panel radius. */
+  .capRow { border-radius: var(--radius-panel); }
 }
 @media (max-width: 720px) {
   .links { display: none; }
