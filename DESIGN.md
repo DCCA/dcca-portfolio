@@ -31,9 +31,9 @@ A print palette pulled straight from the reference. Hex tokens (a screen-print p
 
 ## The halftone screen (signature motif)
 
-The identity is a **procedural dot-screen**. A `field(u,v)` function defines a "source image" over the unit square (cream edges, a vermillion arched field, a dark arched figure, a cobalt base band, teal left, gold top-right glow); that field is sampled onto a **staggered dot grid** and each cell painted as a filled circle with a per-dot radial sheen (a lighter top-left highlight into the sampled color), on a near-black ground. Rendered live to `<canvas>`, device-pixel-crisp, redrawn on resize only (never animated per-frame).
+The identity is a **procedural dot-screen**. A `field(u,v,ar)` function defines a "source image" over the unit square; that field is sampled onto a **staggered dot grid** and each cell painted as a filled circle with a per-dot radial sheen (a lighter top-left highlight into the sampled color), on a near-black ground. Rendered live to `<canvas>`, device-pixel-crisp, redrawn on resize only (never animated per-frame). Geometry is **abstract and non-figurative** — bold color forms, never a recognizable figure. Discs are aspect-corrected via `ar` (width/height) so they stay circular in pixels on any frame.
 
-- **Hero** — a full halftone field is the loud first impression, framed in a rounded near-black card in the hero's right column.
+- **Hero** — a bold vermillion **disc** ("signal") with a cobalt misregistration crescent (riso offset), gold and teal ambient corners, and a cobalt base band. A striking, unmistakably abstract first impression, framed in a rounded near-black card in the hero's right column.
 - **Contact** — a "drenched" close: a second halftone field (cobalt/vermillion) fills a side panel next to the CTAs, so the page ends as boldly as it opens. The CTAs themselves stay on clean paper.
 - **Project chips** — each work tile carries a small CSS dot-screen chip tinted in the project's signal color (vermillion for the live product, cobalt / gold / teal for the repos). Cheap, not a canvas per tile.
 - **Texture** — a very faint dot pattern on the cream ground and inside the dark Method panel ties the surfaces to the screen without noise.

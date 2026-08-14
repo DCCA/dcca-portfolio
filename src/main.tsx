@@ -102,39 +102,36 @@ const sstep = (e0: number, e1: number, x: number): number => {
   return t * t * (3 - 2 * t);
 };
 
-// Hero: recreates the reference composition — cream edges, red arched field, a
-// dark arched figure lower-centre-right, cobalt base, teal left, gold top-right.
-function heroField(u: number, v: number): RGB {
+// Aspect-corrected radial distance so discs stay circular in PIXELS on a
+// non-square frame (u,v are 0..1 fractions; ar = width/height).
+const disc = (u: number, v: number, cx: number, cy: number, r: number, ar: number): number =>
+  Math.hypot(u - cx, (v - cy) / ar) / r;
+
+// Hero: an abstract "signal" poster — a bold vermillion disc with a cobalt
+// misregistration crescent (riso offset), gold and teal ambient corners, and a
+// cobalt base band. Non-figurative by design; geometry stays circular via `ar`.
+function heroField(u: number, v: number, ar: number): RGB {
   let c: RGB = [PAL.cream[0], PAL.cream[1], PAL.cream[2]];
-  c = mix(c, PAL.teal, sstep(0.18, 0.02, u) * 0.85);
-  const dg = Math.hypot((u - 0.84) / 0.5, (v - 0.06) / 0.32);
-  c = mix(c, PAL.gold, (1 - sstep(0, 1, dg)) * 0.7);
-  const redX = sstep(0.15, 0.2, u) * sstep(0.9, 0.85, u);
-  const redTop = 0.015 + 0.11 * Math.pow(Math.abs(u - 0.52) / 0.35, 2);
-  const red = redX * sstep(redTop - 0.02, redTop + 0.03, v);
-  c = mix(c, PAL.verm, red * 0.98);
-  const vX = sstep(0.47, 0.52, u) * sstep(0.84, 0.79, u);
-  const vTop = 0.4 + 0.07 * Math.pow(Math.abs(u - 0.66) / 0.17, 2);
-  const dark = vX * sstep(vTop - 0.02, vTop + 0.04, v);
-  c = mix(c, PAL.ink, dark * 0.95);
-  c = mix(c, PAL.cobalt, sstep(0.87, 0.99, v) * 0.9);
-  c = mix(c, PAL.cobalt, dark * sstep(0.72, 0.92, v) * 0.8);
+  c = mix(c, PAL.gold, (1 - sstep(0, 1, disc(u, v, 0.9, 0.12, 0.62, ar))) * 0.55);
+  c = mix(c, PAL.teal, (1 - sstep(0, 1, disc(u, v, 0.04, 0.96, 0.52, ar))) * 0.5);
+  const rc = disc(u, v, 0.52, 0.44, 0.4, ar);
+  c = mix(c, PAL.verm, sstep(1.04, 0.92, rc));
+  const bc = disc(u, v, 0.4, 0.6, 0.34, ar);
+  c = mix(c, PAL.cobalt, sstep(1.0, 0.88, bc) * sstep(0.9, 1.06, rc) * 0.92);
+  c = mix(c, PAL.cobalt, sstep(0.88, 1.04, v) * 0.85);
   return c;
 }
 
 // Contact: a bolder, simpler close in the same palette — cobalt ground, a
 // vermillion diagonal sweep, a gold spark and teal pool, cream glow top-left.
-function contactField(u: number, v: number): RGB {
+function contactField(u: number, v: number, ar: number): RGB {
   let c: RGB = [PAL.cobalt[0], PAL.cobalt[1], PAL.cobalt[2]];
-  const cg = Math.hypot((u - 0.1) / 0.52, (v - 0.04) / 0.42);
-  c = mix(c, PAL.cream, (1 - sstep(0, 1, cg)) * 0.92);
+  c = mix(c, PAL.cream, (1 - sstep(0, 1, disc(u, v, 0.1, 0.04, 0.5, ar))) * 0.92);
   const d = u * 0.72 + v * 0.72;
   const band = sstep(0.5, 0.6, d) * sstep(1.26, 1.14, d);
   c = mix(c, PAL.verm, band * 0.94);
-  const gd = Math.hypot((u - 0.9) / 0.26, (v - 0.87) / 0.22);
-  c = mix(c, PAL.gold, (1 - sstep(0, 1, gd)) * 0.78);
-  const td = Math.hypot((u - 0.05) / 0.3, (v - 0.92) / 0.28);
-  c = mix(c, PAL.teal, (1 - sstep(0, 1, td)) * 0.55);
+  c = mix(c, PAL.gold, (1 - sstep(0, 1, disc(u, v, 0.9, 0.87, 0.28, ar))) * 0.78);
+  c = mix(c, PAL.teal, (1 - sstep(0, 1, disc(u, v, 0.05, 0.92, 0.34, ar))) * 0.55);
   c = mix(c, PAL.ink, sstep(0.92, 1.04, v) * 0.32);
   return c;
 }
@@ -165,7 +162,7 @@ function HalftoneField({ variant, className, label }: { variant: 'hero' | 'conta
       for (let row = 0, y = step * 0.5; y < H + step; y += step * 0.9, row++) {
         const off = row % 2 ? step * 0.5 : 0;
         for (let x = step * 0.5 + off; x < W + step; x += step) {
-          const col = field(x / W, y / H);
+          const col = field(x / W, y / H, W / H);
           const cr = Math.max(0, Math.min(255, Math.round(col[0])));
           const cgc = Math.max(0, Math.min(255, Math.round(col[1])));
           const cb = Math.max(0, Math.min(255, Math.round(col[2])));
@@ -174,7 +171,7 @@ function HalftoneField({ variant, className, label }: { variant: 'hero' | 'conta
           g.addColorStop(1, `rgb(${cr},${cgc},${cb})`);
           ctx.fillStyle = g;
           ctx.beginPath();
-          ctx.arc(x, y, rad, 0, 6.2832);
+          ctx.arc(x, y, rad, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -289,6 +286,7 @@ function App() {
           <div className="methodMarks" aria-hidden="true">
             <span>Source</span>
             <span>Judge</span>
+            <span>System</span>
             <span>Verify</span>
           </div>
           <div className="methodBody">
