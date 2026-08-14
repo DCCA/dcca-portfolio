@@ -31,23 +31,25 @@ AI systems with product judgment. Daniel pairs senior fintech product leadership
 
 ## Brand Personality
 
-Sharp, credible, understated. The voice is an experienced operator who has nothing to prove and therefore does not oversell: precise, evidence-first, confident in its restraint. It states the useful cut and the tradeoff, names what someone can challenge, and lets the work speak. Warmth comes through clarity and respect for the reader's time, not through hype, exclamation, or manufactured enthusiasm.
+Sharp, credible, confidently expressive. The voice is an experienced operator who has nothing to prove — precise, evidence-first — but is done hiding behind grayscale restraint: it makes a bold visual claim and backs it with shipped work. It states the useful cut and the tradeoff, names what someone can challenge, and lets the work speak. The expression is loud where it earns attention (the halftone signature) and quiet where the reader needs to think (every surface that carries copy). Warmth comes through clarity and respect for the reader's time, not through hype, exclamation, or manufactured enthusiasm.
+
+The visual system (codename Halftone, see DESIGN.md) is a deliberate bet: a distinctive print/dot-screen identity signals product taste and a point of view far more than another safe minimalist résumé would. The boldness is a considered choice, not volume for its own sake — and it is disciplined so the credibility read (below) is never traded away.
 
 ## Anti-references
 
-- Generic AI-slop SaaS: cream/beige backgrounds, tiny uppercase tracked eyebrows over every section, gradient-accent hero-metric blocks, endless identical icon cards. The 2026 default that reads as "AI made this."
-- Loud dev-portfolio gimmicks: neon-on-black, terminal cosplay, animated blobs, walls of skill badges, gratuitous scroll effects. Style substituting for substance.
+- Generic AI-slop SaaS: *undifferentiated* cream/beige minimalism, tiny uppercase tracked eyebrows over every section, gradient-accent hero-metric blocks, endless identical icon cards. The 2026 default that reads as "AI made this." (The objection is to the generic template, not to a warm ground per se — the Halftone system is cream-based but committed and unmistakable, which is the opposite of the templated default.)
+- Loud-for-its-own-sake dev gimmicks: neon-on-black, terminal cosplay, animated blobs, walls of skill badges, gratuitous scroll effects. Boldness with no idea behind it, style substituting for substance. (Halftone is bold, but every loud moment is a single considered motif carrying real brand meaning, not decoration.)
 - Corporate / stiff resume site: LinkedIn-beige, buzzword soup, stock-photo professionalism, no point of view. Safe and forgettable.
-- Over-designed agency showreel: maximalist motion and oversized type for their own sake, form winning over legibility.
+- Over-designed agency showreel: maximalist motion and oversized type for their own sake, form winning over legibility. Halftone stays legible — the screen never sits under running text.
 
-The site should be distinctive and opinionated without being loud — restraint with a POV, not restraint as an excuse for generic.
+The site should be distinctive and opinionated. It is loud in one deliberate voice (the halftone signature) and disciplined everywhere else — a strong POV executed with restraint where it counts, never generic and never noise.
 
 ## Design Principles
 
 - Show, don't claim. Every assertion is backed by a shipped system, a repo, or a receipt the reader can inspect. No adjective stands alone.
 - Trusted operation beats impressive output. The design mirrors the thesis: legible, inspectable, honest about tradeoffs — the opposite of a demo.
 - Small enough to inspect, real enough to validate. Favor concrete, verifiable proof over breadth; a few things that hold up beat many that don't.
-- Restraint with a point of view. Understated is a deliberate stance, not a lack of one. Distinctiveness comes from precision and editorial judgment, not volume.
+- A strong point of view, disciplined. One deliberate loud voice (the halftone signature) against a calm, legible ground. Distinctiveness comes from a committed identity plus editorial judgment about where to be quiet — not from volume everywhere, and not from restraint as an excuse for generic.
 - Operator and builder in one person. The rare combination — senior product judgment plus hands-on code — is the throughline every section reinforces.
 
 ## Accessibility & Inclusion

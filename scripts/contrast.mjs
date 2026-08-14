@@ -24,7 +24,8 @@ const findings = await page.evaluate(() => {
   const ratio = (a, b) => { const hi = Math.max(L(a), L(b)) + 0.05, lo = Math.min(L(a), L(b)) + 0.05; return +(hi / lo).toFixed(2); };
   const cssv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   // Representative fills the walker can't read from backgroundColor alone.
-  const CANVAS = over('oklch(0.78 0.008 74)', [255, 255, 255]);
+  // Base = the cream ground the body gradient paints (read from --canvas token).
+  const CANVAS = over(cssv('--canvas') || '#EEE1C6', [255, 255, 255]);
   const SURFACE = over(cssv('--surface') || '#fff', [255, 255, 255]);
   const ACCENT = over(cssv('--accent') || '#f03', [255, 255, 255]);
   const INK = over(cssv('--ink') || '#111', [255, 255, 255]);

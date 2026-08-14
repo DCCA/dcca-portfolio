@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import './fonts.css';
 import './styles.css';
@@ -7,6 +7,8 @@ const LINKEDIN = 'https://www.linkedin.com/in/daniel-c-campagnoni-andrade-1004b1
 const GITHUB = 'https://github.com/DCCA';
 const EMAIL = 'dcca.hermes@gmail.com';
 
+type Tint = 'verm' | 'cobalt' | 'gold' | 'teal';
+
 type Project = {
   id: string;
   title: string;
@@ -14,6 +16,7 @@ type Project = {
   status: string;
   body: string;
   proof: string;
+  tint: Tint;
   href?: string;
   live?: boolean;
 };
@@ -26,6 +29,7 @@ const projects: Project[] = [
     status: 'Live product',
     body: 'A live AI signal desk that turns launches, repos, tools, and concepts into practical calls: learn, try, watch, or ignore.',
     proof: 'Built on source receipts, editorial judgment, and a clear reason a busy operator should care.',
+    tint: 'verm',
     href: 'https://aisignaldesk.ai/',
     live: true,
   },
@@ -36,6 +40,7 @@ const projects: Project[] = [
     status: 'Public',
     body: 'A Python CLI for scoring Claude Code skills with deterministic checks, safety gates, fixtures, and ship / revise / reject scorecards.',
     proof: 'The point: make AI-assisted work testable before it becomes process folklore.',
+    tint: 'cobalt',
     href: 'https://github.com/DCCA/skval',
   },
   {
@@ -45,6 +50,7 @@ const projects: Project[] = [
     status: 'Public',
     body: 'A personal AI digest pipeline for Telegram and Obsidian with source curation, scoring, scheduling, and an operator console.',
     proof: 'Useful automation stays inspectable: sources, scores, delivery, archive, and human control in one loop.',
+    tint: 'teal',
     href: 'https://github.com/DCCA/vyno',
   },
   {
@@ -54,6 +60,7 @@ const projects: Project[] = [
     status: 'Public',
     body: 'A Chrome workflow for screenshot capture, annotation, and LLM-ready product feedback.',
     proof: 'Turns vague UI taste into evidence people can point at, review, and fix.',
+    tint: 'gold',
     href: 'https://github.com/DCCA/shotback',
   },
 ];
@@ -74,72 +81,117 @@ const improvements: [string, string][] = [
 
 const capabilities = ['Signal curation', 'Eval gates', 'Human review loops', 'Local-first automation', 'Fintech product leadership'];
 
-function Dial({ label = '01', size = 108 }: { label?: string; size?: number }) {
-  const c = size / 2;
-  const ticks = Array.from({ length: 12 }, (_, i) => {
-    const a = (i / 12) * Math.PI * 2;
-    return (
-      <line
-        key={i}
-        x1={c + Math.cos(a) * (c - 4)}
-        y1={c + Math.sin(a) * (c - 4)}
-        x2={c + Math.cos(a) * (c - 11)}
-        y2={c + Math.sin(a) * (c - 11)}
-        stroke="currentColor"
-        strokeWidth="1"
-        opacity="0.45"
-      />
-    );
-  });
-  return (
-    <svg className="dial" width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
-      <circle cx={c} cy={c} r={c - 3} fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.5" />
-      <circle cx={c} cy={c} r={c - 22} fill="none" stroke="currentColor" strokeWidth="1" opacity="0.3" />
-      <line x1={c} y1="3" x2={c} y2={size - 3} stroke="currentColor" strokeWidth="1" opacity="0.18" />
-      <line x1="3" y1={c} x2={size - 3} y2={c} stroke="currentColor" strokeWidth="1" opacity="0.18" />
-      {ticks}
-      <text x={c} y={c + 4} textAnchor="middle" fontFamily="'JetBrains Mono Variable', monospace" fontSize="13" fontWeight="600" fill="currentColor">
-        {label}
-      </text>
-    </svg>
-  );
+/* ---------- halftone screen (the signature motif) ----------
+   A procedural "source field" sampled onto a staggered dot grid, each cell a
+   filled circle with a per-dot radial sheen, on a near-black ground. Rendered
+   live to <canvas>, device-pixel crisp, redrawn on resize only (never per frame),
+   so it stays cheap and reduced-motion friendly. See DESIGN.md → "The halftone
+   screen". Decorative: carries a short aria-label, never load-bearing meaning. */
+type RGB = [number, number, number];
+const PAL = {
+  cream: [238, 225, 198] as RGB,
+  verm: [230, 60, 23] as RGB,
+  cobalt: [27, 41, 201] as RGB,
+  teal: [111, 169, 151] as RGB,
+  gold: [239, 176, 58] as RGB,
+  ink: [22, 18, 30] as RGB,
+};
+const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const sstep = (e0: number, e1: number, x: number): number => {
+  const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+};
+
+// Hero: recreates the reference composition — cream edges, red arched field, a
+// dark arched figure lower-centre-right, cobalt base, teal left, gold top-right.
+function heroField(u: number, v: number): RGB {
+  let c: RGB = [PAL.cream[0], PAL.cream[1], PAL.cream[2]];
+  c = mix(c, PAL.teal, sstep(0.18, 0.02, u) * 0.85);
+  const dg = Math.hypot((u - 0.84) / 0.5, (v - 0.06) / 0.32);
+  c = mix(c, PAL.gold, (1 - sstep(0, 1, dg)) * 0.7);
+  const redX = sstep(0.15, 0.2, u) * sstep(0.9, 0.85, u);
+  const redTop = 0.015 + 0.11 * Math.pow(Math.abs(u - 0.52) / 0.35, 2);
+  const red = redX * sstep(redTop - 0.02, redTop + 0.03, v);
+  c = mix(c, PAL.verm, red * 0.98);
+  const vX = sstep(0.47, 0.52, u) * sstep(0.84, 0.79, u);
+  const vTop = 0.4 + 0.07 * Math.pow(Math.abs(u - 0.66) / 0.17, 2);
+  const dark = vX * sstep(vTop - 0.02, vTop + 0.04, v);
+  c = mix(c, PAL.ink, dark * 0.95);
+  c = mix(c, PAL.cobalt, sstep(0.87, 0.99, v) * 0.9);
+  c = mix(c, PAL.cobalt, dark * sstep(0.72, 0.92, v) * 0.8);
+  return c;
 }
 
-// Decorative instrument-panel "specimen": a schematic of the signal → decision
-// loop. Light (keeps the Method panel as the page's only dark moment) and custom
-// (not stock imagery). aria-hidden internals; the figure carries the label.
-function SpecimenPanel() {
-  const bars = [40, 66, 30, 88, 52, 72, 44, 60];
-  return (
-    <figure className="specimen pill reveal" aria-label="Schematic of the signal-to-decision loop: dials, a ship/revise/reject scorecard, signal bars, and a source trail.">
-      <div className="specScreen" aria-hidden="true">
-        <div className="specHead">
-          <span>Signal Desk</span>
-          <span>OS · 2.0</span>
-        </div>
-        <div className="specRow">
-          <Dial label="01" size={96} />
-          <dl className="specScore">
-            <div className="scoreRow scoreRow--ship"><dt>Ship</dt><dd>12</dd></div>
-            <div className="scoreRow"><dt>Revise</dt><dd>03</dd></div>
-            <div className="scoreRow"><dt>Reject</dt><dd>07</dd></div>
-          </dl>
-        </div>
-        <svg className="specBars" viewBox="0 0 172 56" preserveAspectRatio="none" aria-hidden="true">
-          {bars.map((h, i) => (
-            <rect key={i} x={i * 21 + 3} y={56 - h * 0.5} width="13" height={h * 0.5} rx="2"
-              fill="currentColor" opacity={i === 3 ? 0.7 : 0.3} />
-          ))}
-        </svg>
-        <div className="specTrail">
-          <span>src · github <b>ok</b></span>
-          <span>eval · 12 / 14 gates</span>
-          <span>review · human <b>ok</b></span>
-        </div>
-      </div>
-      <figcaption className="specimenTag">Specimen A — Operating panel</figcaption>
-    </figure>
-  );
+// Contact: a bolder, simpler close in the same palette — cobalt ground, a
+// vermillion diagonal sweep, a gold spark and teal pool, cream glow top-left.
+function contactField(u: number, v: number): RGB {
+  let c: RGB = [PAL.cobalt[0], PAL.cobalt[1], PAL.cobalt[2]];
+  const cg = Math.hypot((u - 0.1) / 0.52, (v - 0.04) / 0.42);
+  c = mix(c, PAL.cream, (1 - sstep(0, 1, cg)) * 0.92);
+  const d = u * 0.72 + v * 0.72;
+  const band = sstep(0.5, 0.6, d) * sstep(1.26, 1.14, d);
+  c = mix(c, PAL.verm, band * 0.94);
+  const gd = Math.hypot((u - 0.9) / 0.26, (v - 0.87) / 0.22);
+  c = mix(c, PAL.gold, (1 - sstep(0, 1, gd)) * 0.78);
+  const td = Math.hypot((u - 0.05) / 0.3, (v - 0.92) / 0.28);
+  c = mix(c, PAL.teal, (1 - sstep(0, 1, td)) * 0.55);
+  c = mix(c, PAL.ink, sstep(0.92, 1.04, v) * 0.32);
+  return c;
+}
+
+function HalftoneField({ variant, className, label }: { variant: 'hero' | 'contact'; className?: string; label: string }) {
+  const ref = useRef<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    const cv = ref.current;
+    if (!cv) return;
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    const field = variant === 'contact' ? contactField : heroField;
+    let raf = 0;
+    const draw = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = cv.getBoundingClientRect();
+      const W = Math.max(1, Math.round(rect.width));
+      const H = Math.max(1, Math.round(rect.height));
+      cv.width = W * dpr;
+      cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = 'rgb(22,18,30)';
+      ctx.fillRect(0, 0, W, H);
+      const cell = Math.max(13, Math.min(26, Math.round(W / 24)));
+      const step = cell;
+      const rad = cell * 0.62;
+      for (let row = 0, y = step * 0.5; y < H + step; y += step * 0.9, row++) {
+        const off = row % 2 ? step * 0.5 : 0;
+        for (let x = step * 0.5 + off; x < W + step; x += step) {
+          const col = field(x / W, y / H);
+          const cr = Math.max(0, Math.min(255, Math.round(col[0])));
+          const cgc = Math.max(0, Math.min(255, Math.round(col[1])));
+          const cb = Math.max(0, Math.min(255, Math.round(col[2])));
+          const g = ctx.createRadialGradient(x - rad * 0.3, y - rad * 0.32, rad * 0.1, x, y, rad);
+          g.addColorStop(0, `rgb(${Math.min(255, cr + 42)},${Math.min(255, cgc + 42)},${Math.min(255, cb + 42)})`);
+          g.addColorStop(1, `rgb(${cr},${cgc},${cb})`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(x, y, rad, 0, 6.2832);
+          ctx.fill();
+        }
+      }
+    };
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(draw);
+    };
+    schedule();
+    const ro = new ResizeObserver(schedule);
+    ro.observe(cv);
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, [variant]);
+  return <canvas ref={ref} className={className} role="img" aria-label={label} />;
 }
 
 const Arrow = () => <span className="arrow" aria-hidden="true">↗</span>;
@@ -193,15 +245,11 @@ function App() {
             </div>
           </div>
 
-          <div className="heroAside">
-            <SpecimenPanel />
-            <dl className="dialCard pill reveal">
-              <Dial label="04" />
-              <div className="dialCopy">
-                <dt>Operating loop</dt>
-                <dd>Source · Judge · System · Verify — four moves, every build.</dd>
-              </div>
-            </dl>
+          <div className="heroAside reveal">
+            <div className="heroScreen">
+              <HalftoneField variant="hero" className="halftoneCanvas" label="A halftone dot-screen rendering: cream edges, a red-orange arched field, a dark arched figure, cobalt at the base." />
+              <span className="screenTag">Specimen — signal field</span>
+            </div>
           </div>
         </section>
 
@@ -219,7 +267,8 @@ function App() {
           </div>
           <div className="tiles">
             {projects.map((p) => (
-              <article className={`tile pill reveal${p.live ? ' tile--live' : ''}`} key={p.id}>
+              <article className={`tile pill reveal${p.live ? ' tile--live' : ''}`} data-tint={p.tint} key={p.id}>
+                <span className="tileChip" aria-hidden="true" />
                 <div className="tileTop">
                   <span className="tileNum">/{p.id}</span>
                   <span className="tileStatus">{p.status}</span>
@@ -238,7 +287,6 @@ function App() {
 
         <section id="method" className="method pill reveal" aria-labelledby="method-title">
           <div className="methodMarks" aria-hidden="true">
-            <Dial label="00" size={132} />
             <span>Source</span>
             <span>Judge</span>
             <span>Verify</span>
@@ -274,25 +322,28 @@ function App() {
         </section>
 
         <section id="contact" className="contact pill reveal" aria-labelledby="contact-title">
-          <div className="contactLead">
+          <div className="contactScreen">
+            <HalftoneField variant="contact" className="halftoneCanvas" label="A halftone dot-screen field in cobalt and vermillion." />
+            <span className="screenTag">Signal · open</span>
+          </div>
+          <div className="contactBody">
             <span className="kicker">Available for sharp AI product conversations</span>
             <h2 id="contact-title">Let's talk systems.</h2>
             <p>Senior AI product roles and serious advisory work. If a workflow needs product judgment, start here.</p>
-            <Dial label="05" size={92} />
-          </div>
-          <div className="contactLinks">
-            <a className="contactLink contactLink--primary" href={LINKEDIN} target="_blank" rel="noreferrer">
-              <span className="lk">LinkedIn</span>
-              <span className="val">Connect <Arrow /></span>
-            </a>
-            <a className="contactLink" href={`mailto:${EMAIL}`}>
-              <span className="lk">Email</span>
-              <span className="val">{EMAIL} <Arrow /></span>
-            </a>
-            <a className="contactLink" href={GITHUB} target="_blank" rel="noreferrer">
-              <span className="lk">GitHub</span>
-              <span className="val">github.com/DCCA <Arrow /></span>
-            </a>
+            <div className="contactLinks">
+              <a className="contactLink contactLink--primary" href={LINKEDIN} target="_blank" rel="noreferrer">
+                <span className="lk">LinkedIn</span>
+                <span className="val">Connect <Arrow /></span>
+              </a>
+              <a className="contactLink" href={`mailto:${EMAIL}`}>
+                <span className="lk">Email</span>
+                <span className="val">{EMAIL} <Arrow /></span>
+              </a>
+              <a className="contactLink" href={GITHUB} target="_blank" rel="noreferrer">
+                <span className="lk">GitHub</span>
+                <span className="val">github.com/DCCA <Arrow /></span>
+              </a>
+            </div>
           </div>
         </section>
       </main>

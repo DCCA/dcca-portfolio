@@ -1,55 +1,65 @@
 # Design
 
-Visual system for the Daniel Andrade portfolio. Codename: **AI OS**. A tactile, operating-system-poster aesthetic — heavy Swiss grotesque set in glossy white "liquid-glass" pills, floating on a warm-gray canvas, with thin schematic diagrams and a single hot red-orange accent. Distinctive and committed; the opposite of AI-default cream minimalism.
+Visual system for the Daniel Andrade portfolio. Codename: **Halftone**. A print-tactile dot-screen identity — the work rendered as a field of overlapping glossy color beads on a warm cream ground, with one loud vermillion signal and cobalt / gold / teal as sharp secondary voices. Risograph energy, disciplined palette. Distinctive and committed; the opposite of generic AI-default cream minimalism.
+
+This is the **Signature** dial (of Accent / Signature / Drench): the halftone is loud where it earns it — the hero screen, the contact close, section transitions, project chips — while every surface that carries running text stays clean and legible. Bold impression, credible read.
 
 ## Theme
 
-Light, warm-gray canvas (never pure white, never cream). Content lives on near-white glossy surfaces; the gray is the room the objects sit in. One dark panel (near-black) provides a single high-contrast moment in the Method section. No dark-mode variant — this is a committed brand surface, single theme by design.
+Light, warm **cream** canvas (`#EEE1C6`, never pure white, never gray). Content lives on a slightly lighter **paper** surface; the cream is the printed ground the beads sit on. One dark panel (near-black ink) provides a single high-contrast moment in the Method section. No dark-mode variant — this is a committed brand surface, single theme by design.
 
 ## Color
 
-OKLCH throughout. Alpha via `rgb(from var(--token) r g b / a)` — no hardcoded channel literals.
+A print palette pulled straight from the reference. Hex tokens (a screen-print palette is defined by its inks, not a lightness ramp); alpha via `rgb(from var(--token) r g b / a)` — no hardcoded channel literals.
 
-- `--canvas` `oklch(0.808 0.008 74)` — warm mid-gray page background (the "room").
-- `--canvas-deep` `oklch(0.732 0.009 74)` — deeper gray for gradient floors and pressed states.
-- `--surface` `oklch(0.986 0.002 90)` — near-white glossy pill/panel.
-- `--surface-hi` `oklch(1 0 0)` — pure-white top highlight for the gloss gradient.
-- `--ink` `oklch(0.18 0.006 60)` — near-black display type and primary text.
-- `--ink-soft` `oklch(0.34 0.006 60)` — secondary text on white.
-- `--muted` `oklch(0.46 0.006 60)` — muted labels/meta on white (≥4.6:1 on `--surface`; verified).
-- `--accent` `oklch(0.628 0.229 30)` — hot red-orange. The single loud color.
-- `--accent-deep` `oklch(0.49 0.19 30)` — accent text on white where small (≥4.5:1).
-- `--on-accent` `oklch(0.2 0.04 40)` — text on accent fills. **Dark**, not light: the bright accent only reaches ~2.8:1 with white, so ink-on-accent (~4.65:1) is the accessible choice, matching the reference's dark-text-on-red card. Accent fills must stay solid (a fade toward `--accent-deep` drops this below AA).
-- `--hairline` `rgb(from var(--ink) r g b / 0.16)` — thin schematic strokes and dividers.
+- `--canvas` `#EEE1C6` — warm cream ground (the printed paper).
+- `--canvas-deep` `#E5D3B0` — deeper cream for the gradient floor.
+- `--surface` `#F6EEDC` — lighter paper for content cards/pills.
+- `--surface-hi` `#FBF6E9` — near-white paper top highlight for the soft gloss.
+- `--ink` `#16121E` — warm near-black. Display type, body text, the void in the screen.
+- `--ink-soft` `#4A4356` — secondary text on cream/paper (≥7:1 on cream; verified).
+- `--muted` `#5F5769` — muted labels/meta on **paper only** (≥4.5:1 on `--surface`; fails on cream — never used there).
+- `--accent` (**vermillion**) `#E63C17` — the single loud color. Carries the brand.
+- `--accent-deep` `#A82A0E` — deep vermillion for small accent text on cream/paper (≥4.5:1). The bright vermillion fails as small text on cream (~3.2:1).
+- `--on-accent` `#0B0910` — near-black text on vermillion fills. **Dark**, not light: bright vermillion only reaches ~2.8:1 with white; near-black clears AA (~4.6:1), matching the reference's dark-on-red read. Accent fills stay solid.
+- `--cobalt` `#1B29C9` — secondary signal. Deep enough to also carry small text on cream (~7:1) or take cream text as a fill.
+- `--gold` `#EFB03A` — secondary signal. Light — as a fill it takes **ink** text, never used as small text on cream.
+- `--teal` `#6FA997` — secondary signal. Used as bead/fill color, not as small text.
+- `--hairline` `rgb(from var(--ink) r g b / 0.14)` — thin dividers and card insets.
 
-**Contrast discipline (WCAG 2.2 AA):** small text only on white surfaces. On the gray canvas, only large display type (`--ink`, ≥8:1) and dark labels are allowed — `--muted` and `--accent` never carry small text on gray (they fail there). Accent as a small-text color uses `--accent-deep` on white only; large accent type may use `--accent`.
+**Contrast discipline (WCAG 2.2 AA):** small text only on paper/cream where it clears AA. On the cream ground, small text is `--ink` / `--ink-soft` / `--accent-deep` / `--cobalt` only — `--muted`, bright `--accent`, `--gold`, and `--teal` never carry small text there. Large display type may use bright `--accent`. Text is **never** set over the live halftone (the dot field is decorative and its pixels are unpredictable) — captions over the screen sit on a solid dark chip.
+
+## The halftone screen (signature motif)
+
+The identity is a **procedural dot-screen**. A `field(u,v)` function defines a "source image" over the unit square (cream edges, a vermillion arched field, a dark arched figure, a cobalt base band, teal left, gold top-right glow); that field is sampled onto a **staggered dot grid** and each cell painted as a filled circle with a per-dot radial sheen (a lighter top-left highlight into the sampled color), on a near-black ground. Rendered live to `<canvas>`, device-pixel-crisp, redrawn on resize only (never animated per-frame).
+
+- **Hero** — a full halftone field is the loud first impression, framed in a rounded near-black card in the hero's right column.
+- **Contact** — a "drenched" close: a second halftone field (cobalt/vermillion) fills a side panel next to the CTAs, so the page ends as boldly as it opens. The CTAs themselves stay on clean paper.
+- **Project chips** — each work tile carries a small CSS dot-screen chip tinted in the project's signal color (vermillion for the live product, cobalt / gold / teal for the repos). Cheap, not a canvas per tile.
+- **Texture** — a very faint dot pattern on the cream ground and inside the dark Method panel ties the surfaces to the screen without noise.
+
+Cell size scales with the canvas width (≈ W/24, clamped 13–26px). Honors `prefers-reduced-motion` (no entrance fade; the field is static regardless).
 
 ## Typography
 
-- **Display** — `Archivo Variable` (self-hosted, fontsource). Poster type uses the width axis wide (`font-stretch: 118–125%`) at weight 850–900, letter-spacing −0.02 to −0.035em (floor −0.04em). Set in the pills. `text-wrap: balance` on h1–h3.
-- **Body / UI** — `Archivo Variable` normal width, weight 400–500, line-height 1.5, body measure ≤ 70ch.
-- **Labels / meta** — `JetBrains Mono Variable` (self-hosted), weight 500, 11–12px, `letter-spacing: 0.06em`, uppercase. Carries the "01" schematic markers, section kickers, and technical captions.
+- **Display** — `Archivo Variable` (self-hosted, fontsource). Heavy grotesque: width axis wide (`font-stretch: 118–125%`) at weight 850–900, letter-spacing −0.03 to −0.045em, uppercase for the poster headlines. The dots are the personality, so the type stays structural — a single heavy grotesque, not a novelty face. `text-wrap: balance` on h1–h3.
+- **Body / UI** — `Archivo Variable` normal width, weight 440–500, line-height 1.5, body measure ≤ 65ch.
+- **Labels / meta** — `JetBrains Mono Variable` (self-hosted), weight 500, 11–12px, `letter-spacing: 0.06–0.12em`, uppercase. Carries kickers, section numbers, and dot-grid captions.
 
-Pairing is contrast-axis (grotesque sans + mono), not two similar sans. Modular scale via `clamp()`, display max ≤ 6.5rem region on desktop, scaled down hard on mobile so headings never overflow.
+Pairing is contrast-axis (grotesque sans + mono). Modular scale via `clamp()`; display scaled down hard on mobile so headings never overflow.
 
 ## Surfaces & gloss
 
-Liquid-glass pill recipe: `background: linear-gradient(180deg, var(--surface-hi), var(--surface))`; a top inset highlight (`inset 0 1px 0 rgb(from white ...)`) plus a soft drop shadow (`0 22px 45px -24px` ink, `0 2px 6px` ink) for lift. Radius is large — full capsules use `border-radius: 999px`; panels use `clamp(22px, 2.6vw, 40px)` (squircle feel). Hover lifts (`translateY(-3px)`, deeper shadow); active presses back. All motion behind `prefers-reduced-motion`.
-
-## Motifs
-
-Thin-stroke SVG **schematic dials** — concentric circles with radial tick divisions and a mono `01` marker — recurring as decorative technical texture (always `aria-hidden`): the hero operating-loop card, a faint one in the Method panel, and one in the contact panel. They echo the reference's instrument-panel feel without carrying meaning.
-
-The hero's right column is a **schematic "operating panel"** (`SpecimenPanel`) — a light instrument screen with a dial, a ship/revise/reject scorecard (the `SHIP` row is the one accent fill), signal bars, and a source trail. It is custom, not stock imagery, and deliberately **light** so the Method section stays the page's single dark moment.
+Matte-print cards, not liquid glass: `background: linear-gradient(180deg, var(--surface-hi), var(--surface))`, a hairline ink inset (`inset 0 0 0 1px`), and a soft low drop shadow for a slight lift off the cream. The near-black **halftone frames** and the **Method** panel are the dark counterweight. Radius is generous — full capsules use `border-radius: 999px`; panels use `clamp(20px, 2.4vw, 34px)`. Hover lifts (`translateY(-3px)`, deeper shadow); active presses back. All motion behind `prefers-reduced-motion`.
 
 ## Accent discipline
 
-The accent is one loud color; keep it scarce. The **LinkedIn CTAs** (hero + contact) are the loudest red on the page — the primary conversion, not a project card, should own attention. The live project is a **featured white tile** with accent *detail* (a red ring, a filled `Live product` chip, an accent number), never a full red flood. A single accent word (`JUDGE`) in the dark Method panel is the one other loud moment.
+Vermillion is one loud color — keep it scarce even in a bold system. The **LinkedIn CTAs** (hero + contact) are the loudest vermillion fills on the page — the primary conversion owns the loudest moment, not a project card. The live project is a **paper tile with a vermillion chip + ring** (accent detail, not a full flood). A single vermillion word (`JUDGE`) in the dark Method panel is the one other loud moment. Cobalt, gold, and teal appear only as secondary bead/chip signals, never competing with vermillion for the primary read.
 
 ## Motion
 
-Purposeful, tactile, minimal. Staggered fade-up entrance (transform + opacity only, ease-out-expo). Pill hover/press. No bounce, no per-section scroll reveals gated on visibility. Every animation has a reduced-motion fallback (crossfade/instant).
+Purposeful, tactile, minimal. Staggered fade-up entrance (transform + opacity only, ease-out-expo). Card hover/press. The halftone field is static (drawn once, redrawn on resize). No bounce, no per-frame animation, no scroll-jacking. Every animation has a reduced-motion fallback (crossfade/instant).
 
 ## Focus & accessibility
 
-Context-aware `:focus-visible`: a 3px ring that contrasts with whatever surface the control sits on — ink ring on white/accent, white ring on ink. Never accent-on-accent. Full keyboard nav, semantic landmarks (`header` outside `main`), skip link, honored `prefers-reduced-motion`. Target WCAG 2.2 AA.
+Context-aware `:focus-visible`: a 3px ink ring offset outside the control so it always lands on a light surface. Never accent-on-accent. Full keyboard nav, semantic landmarks (`header` outside `main`), skip link, honored `prefers-reduced-motion`. Halftone canvases are decorative — either `aria-hidden` or given a short descriptive `aria-label`, never load-bearing for meaning. Target WCAG 2.2 AA.
