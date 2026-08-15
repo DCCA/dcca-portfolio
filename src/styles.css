@@ -1,41 +1,47 @@
 :root {
   color-scheme: light;
 
-  --canvas: oklch(0.808 0.008 74);
-  --canvas-deep: oklch(0.732 0.009 74);
-  --surface: oklch(0.986 0.002 90);
-  --surface-hi: oklch(1 0 0);
+  /* Halftone print palette (see DESIGN.md). Hex — a screen-print palette is
+     defined by its inks, not a lightness ramp. Alpha via rgb(from …). */
+  --canvas: #EEE1C6;        /* warm cream ground */
+  --canvas-deep: #E5D3B0;   /* deeper cream, gradient floor */
+  --surface: #F6EEDC;       /* paper content surface */
+  --surface-hi: #FBF6E9;    /* lighter paper top highlight */
 
-  --ink: oklch(0.18 0.006 60);
-  --ink-soft: oklch(0.34 0.006 60);
-  --muted: oklch(0.46 0.006 60);
+  --ink: #16121E;           /* warm near-black — display + body text, the void */
+  --ink-soft: #4A4356;      /* secondary text (≥7:1 on cream) */
+  --muted: #5F5769;         /* muted meta — PAPER ONLY (fails on cream) */
 
-  --accent: oklch(0.628 0.229 30);
-  --accent-deep: oklch(0.49 0.19 30);
-  /* text ON accent fills is dark (like the reference red card) — light text on this
-     bright red-orange only reaches ~2.8:1; dark ink clears AA. */
-  --on-accent: oklch(0.2 0.04 40);
+  --accent: #E63C17;        /* vermillion — the single loud color */
+  --accent-deep: #A82A0E;   /* deep vermillion for small accent text (≥4.5:1) */
+  /* text ON vermillion fills is near-black: bright vermillion only reaches
+     ~2.8:1 with white; near-black clears AA (~4.6:1), like the reference. */
+  --on-accent: #0B0910;
+  --cobalt: #1B29C9;        /* secondary signal (also readable as small text) */
+  --gold: #EFB03A;          /* secondary signal — as a fill takes ink text */
+  --teal: #6FA997;          /* secondary signal — bead/fill only */
 
-  --hairline: rgb(from var(--ink) r g b / 0.16);
-  --hairline-strong: rgb(from var(--ink) r g b / 0.24);
+  --hairline: rgb(from var(--ink) r g b / 0.14);
+  --hairline-strong: rgb(from var(--ink) r g b / 0.22);
 
   --display: 'Archivo Variable', 'Arial Black', system-ui, sans-serif;
   --mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Mono', monospace;
 
+  /* Matte-print card lift (not liquid glass): hairline ink inset + soft low shadow. */
   --shadow-pill:
     inset 0 1px 0 rgb(from var(--surface-hi) r g b / 0.9),
-    inset 0 0 0 1px rgb(from var(--surface-hi) r g b / 0.4),
-    0 2px 5px rgb(from var(--ink) r g b / 0.1),
-    0 22px 45px -26px rgb(from var(--ink) r g b / 0.5);
+    inset 0 0 0 1px var(--hairline),
+    0 2px 5px rgb(from var(--ink) r g b / 0.08),
+    0 20px 40px -28px rgb(from var(--ink) r g b / 0.45);
   --shadow-pill-hi:
     inset 0 1px 0 rgb(from var(--surface-hi) r g b / 0.95),
-    inset 0 0 0 1px rgb(from var(--surface-hi) r g b / 0.5),
-    0 4px 10px rgb(from var(--ink) r g b / 0.14),
-    0 34px 60px -28px rgb(from var(--ink) r g b / 0.6);
+    inset 0 0 0 1px var(--hairline-strong),
+    0 4px 10px rgb(from var(--ink) r g b / 0.12),
+    0 32px 56px -30px rgb(from var(--ink) r g b / 0.5);
 
-  --radius-panel: clamp(22px, 2.6vw, 40px);
-  --pad-panel: clamp(26px, 3.2vw, 48px);   /* one padding scale for all large glossy panels */
-  --radius-tile: clamp(20px, 2vw, 32px);
+  --radius-panel: clamp(20px, 2.4vw, 34px);
+  --pad-panel: clamp(26px, 3.2vw, 48px);
+  --radius-tile: clamp(18px, 2vw, 28px);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --gutter: clamp(16px, 3.4vw, 40px);
 }
@@ -47,10 +53,16 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   min-height: 100dvh;
-  background:
-    radial-gradient(120% 90% at 50% -10%, rgb(from var(--surface) r g b / 0.5) 0%, transparent 55%),
+  background-color: var(--canvas);
+  /* faint dot-screen texture over a soft cream gradient — ties the surfaces to
+     the halftone motif without noise. */
+  background-image:
+    radial-gradient(rgb(from var(--ink) r g b / 0.045) 1px, transparent 1.7px),
+    radial-gradient(120% 90% at 50% -8%, rgb(from var(--surface-hi) r g b / 0.6) 0%, transparent 55%),
     linear-gradient(180deg, var(--canvas) 0%, var(--canvas-deep) 100%);
-  background-attachment: fixed;
+  background-size: 22px 22px, auto, auto;
+  background-position: 0 0, 0 0, 0 0;
+  background-attachment: fixed, fixed, fixed;
   color: var(--ink);
   font-family: var(--display);
   font-weight: 440;
@@ -60,7 +72,7 @@ body {
 }
 
 a { color: inherit; text-decoration: none; }
-img { display: block; max-width: 100%; }
+img, canvas { display: block; max-width: 100%; }
 
 h1, h2, h3, p, dd, dl, figure { margin: 0; }
 
@@ -108,48 +120,37 @@ h1, h2, h3 {
   flex-direction: column;
   gap: clamp(16px, 2.4vw, 30px);
 }
-/* Sections live inside <main>; give them the SAME rhythm token as everything
-   else so every panel floats with consistent breathing room (they were flush). */
 main {
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 2.4vw, 30px);
 }
 
-/* ---------- glossy surface primitive ---------- */
+/* ---------- matte paper surface primitive ---------- */
 .pill {
-  background: linear-gradient(180deg, var(--surface-hi), var(--surface) 62%, var(--canvas) 320%);
+  background: linear-gradient(180deg, var(--surface-hi), var(--surface) 70%);
   box-shadow: var(--shadow-pill);
   border-radius: var(--radius-panel);
 }
 
 /* ---------- top bar ----------
    Full-bleed frosted band so scrolled content is masked behind the sticky bar
-   instead of showing through the floating pill's transparent margins. Sticks to
-   the very top (top:0) and re-insets the pill via padding. */
+   instead of showing through the floating pill's transparent margins. */
 .topbar {
   position: sticky;
   top: 0;
   z-index: 40;
-  /* Full-viewport-width band (sibling of .page, not inside its 1360px cap), so
-     the frost is edge-to-edge with no side strips. Uses 100% width — never vw —
-     so a scrollbar can't cause horizontal overflow. */
   padding-block: clamp(10px, 1.6vw, 18px);
-  /* Transparent + blur only. A solid tint (canvas@0.72) painted a visibly
-     lighter rectangle behind the menu at rest, with a hard seam where the band
-     ended. Blur alone leaves the canvas color unchanged at rest (no seam) yet
-     still softens scrolled content behind the bar so nothing shows sharply. */
   background: transparent;
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }
-/* Inner container aligns the pill to the same 1360px grid + gutter as .page. */
 .topbarInner {
   width: min(100%, 1360px);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-/* no blur support → make the band fully opaque so nothing shows through. */
+/* no blur support → make the band the cream ground so nothing shows through. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .topbar { background: var(--canvas); }
 }
@@ -239,6 +240,8 @@ h1 {
   letter-spacing: -0.035em;
   text-transform: uppercase;
 }
+/* the connective word is de-emphasized (muted), not a second loud red beat —
+   the loudest vermillion fills stay reserved for the LinkedIn CTAs. */
 h1 .fade { color: var(--muted); }
 .heroLead {
   max-width: 46ch;
@@ -278,62 +281,32 @@ h1 .fade { color: var(--muted); }
 .cta--ghost { background: rgb(from var(--ink) r g b / 0.05); color: var(--ink); box-shadow: inset 0 0 0 1px var(--hairline-strong); }
 .cta--ghost:hover, .cta--ghost:focus-visible { transform: translateY(-3px); background: rgb(from var(--ink) r g b / 0.09); }
 
-.heroAside { position: relative; display: flex; flex-direction: column; gap: clamp(16px, 2.4vw, 30px); }
-/* Schematic "operating panel" specimen — a light instrument panel (keeps the
-   Method section as the page's only dark moment). Custom, not stock imagery. */
-.specimen {
+/* ---------- halftone screen (signature motif) ---------- */
+.heroAside { display: flex; }
+.heroScreen {
   position: relative;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-height: clamp(300px, 34vw, 460px);
-  padding: 14px;
+  min-height: clamp(340px, 42vw, 560px);
   border-radius: var(--radius-panel);
-  margin: 0;
-}
-.specScreen {
-  flex: 1;
-  border-radius: calc(var(--radius-panel) - 12px);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  background-color: var(--surface);
-  background-image: radial-gradient(var(--hairline) 1px, transparent 1.4px);
-  background-size: 15px 15px;
-  color: var(--ink);
-  /* a touch more vertical padding so the top labels clear the panel's rounded corners */
-  padding: clamp(22px, 2.1vw, 30px) clamp(16px, 1.9vw, 26px);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;   /* distribute modules so the panel fills its height instead of top-loading */
-  gap: clamp(12px, 1.7vw, 20px);
   overflow: hidden;
+  background: var(--ink);
+  box-shadow: var(--shadow-pill), 0 30px 60px -34px rgb(from var(--ink) r g b / 0.7);
 }
-.specHead { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
-.specRow { display: flex; align-items: center; gap: clamp(14px, 2vw, 24px); }
-.specScore { flex: 1; display: grid; gap: 7px; margin: 0; min-width: 0; }
-.scoreRow { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 10px; background: rgb(from var(--ink) r g b / 0.045); box-shadow: inset 0 0 0 1px var(--hairline); }
-.scoreRow dt { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
-.scoreRow dd { margin: 0; font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink); }
-.scoreRow--ship { background: var(--accent); box-shadow: none; }
-.scoreRow--ship dt, .scoreRow--ship dd { color: var(--on-accent); }
-.specBars { width: 100%; height: clamp(38px, 5vw, 54px); color: var(--ink); }
-.specTrail { display: grid; gap: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em; color: var(--ink-soft); }
-.specTrail b { color: var(--accent-deep); font-weight: 600; }
-.specimenTag {
-  display: inline-flex; gap: 10px; align-items: center; align-self: flex-start;
-  padding: 9px 14px; border-radius: 999px;
-  background: rgb(from var(--ink) r g b / 0.05);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft);
+.halftoneCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* caption sits on a solid dark chip — text is never set over the live dots. */
+.screenTag {
+  position: absolute; left: clamp(12px, 1.4vw, 18px); bottom: clamp(12px, 1.4vw, 18px);
+  z-index: 1;
+  padding: 8px 13px; border-radius: 999px;
+  /* solid fallbacks first: if relative-color is unsupported the rgb(from …)
+     lines drop, and the caption must not become dark-on-dark on the screen. */
+  background: #16121E;
+  color: #F6EEDC;
+  background: rgb(from var(--ink) r g b / 0.82);
+  box-shadow: inset 0 0 0 1px rgb(from var(--surface) r g b / 0.18);
+  font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: rgb(from var(--surface) r g b / 0.94);
 }
-.specimenTag::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--accent); }
-.dialCard { padding: clamp(18px, 2vw, 26px); border-radius: var(--radius-panel); display: flex; align-items: center; gap: 18px; }
-.dialCard .dial { flex: none; }
-.dialCopy dt { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-deep); }
-.dialCopy dd { margin-top: 6px; font-stretch: 100%; font-weight: 500; font-size: 13px; line-height: 1.35; color: var(--ink-soft); }
-
-.dial { color: var(--ink); }
-.dial circle, .dial line, .dial path { vector-effect: non-scaling-stroke; }
 
 /* ---------- capability row ---------- */
 .capRow { display: flex; flex-wrap: wrap; gap: 10px; padding: clamp(14px, 1.6vw, 20px) clamp(16px, 2vw, 26px); align-items: center; border-radius: 999px; }
@@ -346,20 +319,15 @@ h1 .fade { color: var(--muted); }
 }
 
 /* ---------- section heads ---------- */
-/* Inset by the panel token so this heading (the Work section has no pill) shares
-   the SAME left edge as the hero/help/contact headings — keeping the display-type
-   spine consistent down the page. Bottom padding matches Help/Method head→content. */
 .sectionHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 0 var(--pad-panel) clamp(20px, 2.4vw, 30px); flex-wrap: wrap; }
 .sectionHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 22ch; }
-.sectionHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); max-width: 24ch; text-align: right; }
-/* The Work section head sits directly on the gray canvas (not inside a .pill),
-   where muted small text fails AA. Use dark ink there. */
-.work .sectionHead p { color: var(--ink-soft); }
+.sectionHead p { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); max-width: 30ch; text-align: right; text-wrap: balance; }
 
 /* ---------- work tiles ---------- */
 .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.8vw, 22px); }
 .tile {
   position: relative;
+  overflow: hidden;
   display: flex; flex-direction: column;
   padding: clamp(22px, 2.4vw, 34px);
   border-radius: var(--radius-tile);
@@ -367,35 +335,62 @@ h1 .fade { color: var(--muted); }
   transition: transform 360ms var(--ease), box-shadow 360ms var(--ease);
 }
 .tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-pill-hi); }
-.tileTop { display: flex; align-items: center; justify-content: space-between; }
+/* dot-screen "stamp" in the tile's signal color, bleeding off the lower-right
+   corner. Decorative texture (aria-hidden span) — never under text. */
+.tileChip {
+  position: absolute; right: -26px; bottom: -26px;
+  width: clamp(66px, 8vw, 88px); height: clamp(66px, 8vw, 88px);
+  background: var(--chip, var(--accent));
+  -webkit-mask: radial-gradient(circle, #000 42%, transparent 46%);
+  mask: radial-gradient(circle, #000 42%, transparent 46%);
+  -webkit-mask-size: 11px 11px; mask-size: 11px 11px;
+  opacity: 0.42;
+  pointer-events: none;
+}
+.tile[data-tint="verm"]   { --chip: var(--accent); }
+.tile[data-tint="cobalt"] { --chip: var(--cobalt); }
+.tile[data-tint="gold"]   { --chip: var(--gold); }
+.tile[data-tint="teal"]   { --chip: var(--teal); }
+.tileTop { position: relative; display: flex; align-items: center; justify-content: space-between; }
 .tileNum { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; color: var(--muted); }
 .tileStatus { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 11px; border-radius: 999px; background: rgb(from var(--ink) r g b / 0.06); color: var(--ink-soft); box-shadow: inset 0 0 0 1px var(--hairline); }
-.tile h3 { margin-top: clamp(18px, 2vw, 26px); font-size: clamp(1.8rem, 2.6vw, 2.7rem); text-transform: uppercase; }
-.tileType { margin-top: 10px; font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-deep); }
-.tileBody { margin-top: 16px; font-stretch: 100%; font-weight: 450; font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); }
-.tileProof { margin-top: 12px; font-stretch: 100%; font-weight: 450; font-size: 13px; line-height: 1.45; color: var(--muted); }
-.tileOpen { margin-top: auto; padding-top: 22px; display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-deep); width: fit-content; }
+.tile h3 { position: relative; margin-top: clamp(18px, 2vw, 26px); font-size: clamp(1.8rem, 2.6vw, 2.7rem); text-transform: uppercase; }
+.tileType { position: relative; margin-top: 10px; font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-deep); }
+/* padding-right keeps the last lines clear of the corner dot-chip (which reaches
+   ~60px into the bottom-right), so no running text ever sits over the dots. */
+.tileBody { position: relative; margin-top: 16px; padding-right: clamp(28px, 4vw, 52px); font-stretch: 100%; font-weight: 450; font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); }
+.tileProof { position: relative; margin-top: 12px; padding-right: clamp(28px, 4vw, 52px); font-stretch: 100%; font-weight: 450; font-size: 13px; line-height: 1.45; color: var(--muted); }
+.tileOpen { position: relative; margin-top: auto; padding-top: 22px; display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-deep); width: fit-content; }
 .tileOpen .arrow { transition: transform 320ms var(--ease); }
 .tileOpen:hover .arrow, .tileOpen:focus-visible .arrow { transform: translate(3px, -3px); }
 
-/* Featured "live" tile — a white pill with accent DETAIL (ring, filled status
-   chip, accent number), not a full red flood. Keeps the loudest red for the
-   LinkedIn CTAs so the primary conversion, not a project card, owns attention. */
-.tile--live { box-shadow: var(--shadow-pill), 0 0 0 1.5px rgb(from var(--accent) r g b / 0.5), 0 26px 48px -28px rgb(from var(--accent) r g b / 0.5); }
-.tile--live:hover { box-shadow: var(--shadow-pill-hi), 0 0 0 1.5px rgb(from var(--accent) r g b / 0.62), 0 34px 60px -28px rgb(from var(--accent) r g b / 0.55); }
+/* Featured "live" tile — a paper tile with a vermillion ring + chip (accent
+   DETAIL, not a full flood). Keeps the loudest red for the LinkedIn CTAs. */
+.tile--live { box-shadow: var(--shadow-pill), 0 0 0 1.5px rgb(from var(--accent) r g b / 0.55), 0 26px 48px -30px rgb(from var(--accent) r g b / 0.5); }
+.tile--live:hover { box-shadow: var(--shadow-pill-hi), 0 0 0 1.5px rgb(from var(--accent) r g b / 0.68), 0 34px 60px -30px rgb(from var(--accent) r g b / 0.55); }
 .tile--live .tileNum { color: var(--accent-deep); }
-.tile--live .tileStatus { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+/* outline treatment, not a solid fill: the only SOLID vermillion fills on the
+   page stay the two LinkedIn CTAs. This reads as "live/red-coded" via the ring
+   + accent-deep text without a second flood. */
+.tile--live .tileStatus { background: rgb(from var(--accent) r g b / 0.12); color: var(--accent-deep); box-shadow: inset 0 0 0 1px rgb(from var(--accent) r g b / 0.5); }
+.tile--live .tileChip { opacity: 0.5; }
 
 /* ---------- method (dark) ---------- */
 .method { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 0; overflow: hidden; padding: 0; border-radius: var(--radius-panel); }
-/* background-color fallback first: if color-mix() is unsupported the whole
-   `background` shorthand is dropped, and near-white text must not land on the
-   light canvas. The solid ink keeps the dark panel (and its contrast) intact. */
-.methodMarks { position: relative; background-color: var(--ink); background: linear-gradient(180deg, var(--ink), color-mix(in oklab, var(--ink), black 30%)); color: var(--surface); padding: var(--pad-panel); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
-.methodMarks .dial { position: absolute; top: clamp(22px, 2.6vw, 36px); right: clamp(22px, 2.6vw, 36px); color: var(--surface); opacity: 0.2; }
+.methodMarks {
+  position: relative;
+  background-color: var(--ink);
+  background-image:
+    radial-gradient(rgb(from var(--surface) r g b / 0.07) 1px, transparent 1.5px),
+    linear-gradient(180deg, var(--ink), #0E0B14);
+  background-size: 18px 18px, auto;
+  color: var(--surface);
+  padding: var(--pad-panel);
+  display: flex; flex-direction: column; justify-content: center; gap: 6px;
+}
 .methodMarks span { font-size: clamp(2.6rem, 6vw, 5rem); font-stretch: 125%; font-weight: 900; line-height: 0.82; letter-spacing: -0.04em; text-transform: uppercase; }
 .methodMarks span:nth-child(2) { color: var(--accent); }
-.methodMarks span:nth-child(3) { color: rgb(from var(--surface) r g b / 0.4); }
+.methodMarks span:nth-child(4) { color: rgb(from var(--surface) r g b / 0.4); }
 .methodBody { padding: var(--pad-panel); background: var(--surface); }
 .methodBody .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
 .methodBody h2 { margin-top: 12px; font-size: clamp(1.9rem, 3.2vw, 3rem); text-transform: uppercase; max-width: 18ch; }
@@ -404,7 +399,6 @@ h1 .fade { color: var(--muted); }
 .modeItem dd { margin-top: 10px; font-stretch: 100%; font-weight: 450; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
 
 /* ---------- help ---------- */
-/* A single-column ledger (not another 2x2 grid) to vary the page rhythm. */
 .help { padding: var(--pad-panel); border-radius: var(--radius-panel); }
 .helpHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 .helpHead h2 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); text-transform: uppercase; max-width: 20ch; }
@@ -416,17 +410,24 @@ h1 .fade { color: var(--muted); }
 .helpRow dt { font-size: clamp(1.1rem, 1.9vw, 1.6rem); text-transform: uppercase; font-stretch: 118%; }
 .helpRow dd { margin: 0; font-stretch: 100%; font-weight: 450; font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
 
-/* ---------- contact ---------- */
-.contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2.4vw, 30px); padding: var(--pad-panel); border-radius: var(--radius-panel); }
-.contactLead { position: relative; }
-.contactLead .dial { color: var(--ink); opacity: 0.14; margin-top: clamp(24px, 3.4vw, 44px); }
-.contactLead .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
-.contactLead h2 { margin-top: 14px; font-size: clamp(2.2rem, 4vw, 3.4rem); text-transform: uppercase; }
-.contactLead p { margin-top: 18px; max-width: 34ch; font-stretch: 100%; font-weight: 450; font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); }
-.contactLinks { display: flex; flex-direction: column; gap: 10px; align-content: start; }
+/* ---------- contact (drenched close) ---------- */
+.contact { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(18px, 2.4vw, 34px); padding: var(--pad-panel); border-radius: var(--radius-panel); }
+.contactScreen {
+  position: relative;
+  min-height: clamp(300px, 34vw, 460px);
+  border-radius: var(--radius-tile);
+  overflow: hidden;
+  background: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--hairline), 0 24px 50px -34px rgb(from var(--ink) r g b / 0.7);
+}
+.contactBody { display: flex; flex-direction: column; }
+.contactBody .kicker { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent-deep); }
+.contactBody h2 { margin-top: 14px; font-size: clamp(2.2rem, 4vw, 3.4rem); text-transform: uppercase; }
+.contactBody > p { margin-top: 18px; max-width: 34ch; font-stretch: 100%; font-weight: 450; font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); }
+.contactLinks { display: flex; flex-direction: column; gap: 10px; margin-top: clamp(22px, 2.6vw, 32px); }
 .contactLink {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 18px 20px; border-radius: 18px;
+  padding: 18px 20px; border-radius: 16px;
   background: rgb(from var(--ink) r g b / 0.04); box-shadow: inset 0 0 0 1px var(--hairline);
   transition: transform 300ms var(--ease), background 300ms var(--ease);
 }
@@ -440,20 +441,14 @@ h1 .fade { color: var(--muted); }
 .contactLink:hover .arrow { transform: translate(3px, -3px); }
 
 /* ---------- footer ---------- */
-/* Footer sits on the darkest part of the canvas gradient; --muted fails AA
-   there, so use --ink-soft (dark label on gray is the DESIGN.md rule). */
 .footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 4px clamp(8px, 1vw, 14px); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); flex-wrap: wrap; }
 
-/* ---------- focus ----------
-   Offset +3px puts the ring OUTSIDE the control, so it always renders on the
-   surrounding light surface (canvas or white pill) — an ink ring stays visible
-   on every control, including the accent/ink-filled ones. */
+/* ---------- focus ---------- */
 :where(a, button):focus-visible {
   outline: 3px solid var(--ink);
   outline-offset: 3px;
   border-radius: 8px;
 }
-/* skip-link target: focusable for AT, but no ring when programmatically focused */
 [tabindex="-1"]:focus { outline: none; }
 
 /* ---------- motion ---------- */
@@ -476,23 +471,25 @@ h1 .fade { color: var(--muted); }
 /* ---------- responsive ---------- */
 @media (max-width: 1080px) {
   .hero { grid-template-columns: minmax(0, 1fr); }
-  .heroAside { flex-direction: row; }
-  .specimen { min-height: 300px; }
+  .heroScreen { min-height: 0; aspect-ratio: 16 / 11; }
   .method { grid-template-columns: minmax(0, 1fr); }
+  .contact { grid-template-columns: minmax(0, 1fr); }
+  /* stack the copy + primary LinkedIn CTA ABOVE the decorative field on mobile */
+  .contactBody { order: 0; }
+  .contactScreen { order: 1; min-height: 0; aspect-ratio: 16 / 9; }
   /* Once the capability pills wrap to multiple rows, the 999px stadium radius
      becomes a giant capsule that clips the corner pills. Use the panel radius. */
   .capRow { border-radius: var(--radius-panel); }
 }
 @media (max-width: 720px) {
   .links { display: none; }
-  .heroAside { flex-direction: column; }
   .tiles { grid-template-columns: minmax(0, 1fr); }
   .helpRow { grid-template-columns: 44px minmax(0, 1fr); row-gap: 8px; }
   .helpRow dd { grid-column: 1 / 3; }
   .modeList { grid-template-columns: minmax(0, 1fr); }
-  .contact { grid-template-columns: minmax(0, 1fr); }
   .sectionHead p { display: none; }
   .heroProof { grid-template-columns: minmax(0, 1fr); }
+  .heroScreen { aspect-ratio: 5 / 4; }
   /* narrower + smaller so whole words fit the column and never break mid-word */
   h1 { font-size: clamp(2.2rem, 11vw, 3.3rem); font-stretch: 110%; letter-spacing: -0.028em; }
   .sectionHead h2 { font-size: clamp(1.9rem, 8.4vw, 2.8rem); }
